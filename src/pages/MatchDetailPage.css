@@ -1,0 +1,104 @@
+/* src/pages/MatchDetailPage.css */
+
+.detail-container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.detail-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.detail-header h1 {
+  font-size: 2.5em;
+  margin: 0;
+}
+.detail-header h1 span {
+  font-size: 0.7em;
+  color: #666;
+  margin: 0 15px;
+}
+
+.team-flags {
+  font-size: 3em;
+  margin-top: 10px;
+}
+
+.detail-info {
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.ticket-section h2 {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.ticket-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 20px;
+}
+
+.category-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+}
+
+.category-card h3 {
+  margin-top: 0;
+  font-size: 1em;
+}
+
+.category-card .price {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  margin: 10px 0;
+}
+
+.category-card .availability {
+  font-size: 0.9em;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.category-card button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #28a745;
+  color: white;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.category-card button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.category-card button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.header-flag {
+  width: 40px;
+  margin: 0 15px;
+  vertical-align: middle; /* Aligne l'image avec le texte */
+}

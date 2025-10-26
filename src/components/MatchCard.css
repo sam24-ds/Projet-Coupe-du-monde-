@@ -1,0 +1,77 @@
+/* src/components/MatchCard.css */
+
+.match-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.match-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.match-card-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.match-card-teams span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.match-card-info {
+  font-size: 0.9em;
+  color: #666;
+  flex-grow: 1;
+}
+
+.match-card-availability {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #eee;
+  text-align: center;
+}
+
+.seats-available {
+  color: #28a745;
+  font-weight: bold;
+  margin: 0;
+}
+
+.price {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+  margin: 4px 0 0 0;
+}
+
+.sold-out {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.team-display {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Espace entre le drapeau et le nom */
+}
+
+.flag-icon {
+  width: 24px;  /* On définit une largeur fixe */
+  height: auto; /* La hauteur s'ajustera automatiquement */
+  border: 1px solid #eee; /* Une petite bordure pour faire joli */
+}
