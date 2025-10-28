@@ -4,6 +4,7 @@ import { type Match } from "../types";
 import { getMtchDetailsById } from "../services/apiService";
 import './MatchDetailPage.css'
 import { API_BASE_URL } from "../services/apiService";
+import { useCart } from '../context/CartContext';
 
 function MatchDetailPage(){
 
@@ -12,6 +13,7 @@ function MatchDetailPage(){
     const [match, setMatch] = useState<Match | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { addToCart } = useCart(); 
 
     useEffect(()=>{
         if(!id) return;
@@ -79,7 +81,10 @@ function MatchDetailPage(){
                 <h3>{categoryName.replace('_', ' ')}</h3>
                 <p className="price">{categoryDetails.price.toFixed(2)} €</p>
                 <p className="availability">{categoryDetails.availableSeats} places restantes</p>
-                <button disabled={!categoryDetails.available || categoryDetails.availableSeats === 0}>
+                <button
+                   onClick={() => addToCart(match, categoryName, categoryDetails)}
+                   disabled={!categoryDetails.available || categoryDetails.availableSeats === 0}
+                >
                   Ajouter au panier
                 </button>
               </div>
