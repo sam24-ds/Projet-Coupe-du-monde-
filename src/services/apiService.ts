@@ -96,14 +96,6 @@ export const registerUser = (userData: UserSignupData) => {
     body: JSON.stringify(userData),
   });
 };
-export async function getMe(token: string) {
-  const res = await fetch(`/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!res.ok) throw new Error("Token invalide");
-  return res.json();
+export const getMe = (): Promise<UserProfile> => {
+    return authFetch<UserProfile>('/auth/me');
 }
-

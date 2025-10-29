@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, type ReactNode } from "react";
 import { loginUser, getMe } from "../services/apiService";
-import type { Match, UserProfile } from "../types";
+import type {  UserProfile } from "../types";
 
 type AuthContextType = {
   user: UserProfile | null;
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     localStorage.setItem("jwt_token", access_token);
 
-    const me = await getMe(access_token);
+    const me = await getMe();
     setUser(me);
   }
 
