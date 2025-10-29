@@ -22,7 +22,7 @@ function MatchDetailPage(){
             try{
                 setIsLoading(true);
                 const data = await getMtchDetailsById(id);
-                console.log('la data :', data)
+                //console.log('la data :', data)
                 setMatch(data);
 
             }catch (err: any){
