@@ -6,11 +6,18 @@ export interface Stadium {
     capacity: number;
 }
 
+export interface Group {
+  id: number;
+  name: string;
+}
+
 export interface Team {
     id:number;
     name:string;
     flag:string;
     flagImagePath: string;
+    groupId: number;
+    continent: string;
 }
 
 //Un type pour une seule catégorie de ticket
@@ -62,3 +69,4 @@ export interface UserProfile {
   lastname: string;
   birthDate: string;
 }
+

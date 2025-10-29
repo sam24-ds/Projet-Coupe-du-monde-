@@ -1,4 +1,5 @@
-import { type Match, type UserCredentials, type UserSignupData,type UserProfile,type AuthResponse } from "../types";
+
+import type { Match, Team, Group,UserCredentials, UserSignupData,  UserProfile, AuthResponse} from "../types";
 
 export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
 
@@ -39,14 +40,10 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
 
 export const getAllMatches = async (): Promise<Match[]> =>{
     const response = await fetch(`${API_BASE_URL}/matches/availability`);
-
     if (!response.ok){
         throw new Error('Failed to fetch Match')
-        
     }
-
     const apiResponse = await response.json();
-
     return apiResponse.data;
 }
 
@@ -99,3 +96,20 @@ export const registerUser = (userData: UserSignupData) => {
 export const getMe = (): Promise<UserProfile> => {
     return authFetch<UserProfile>('/auth/me');
 }
+//fonction pour récupérer toutes les équipes
+export const getAllTeams = async (): Promise<Team[]> => {
+  
+    const response = await fetch(`${API_BASE_URL}/teams`);
+    if (!response.ok) throw new Error('Failed to fetch teams.');
+    const data = await response.json();
+    return data.data;
+};
+
+//fonction pour récupérer tous les groupes
+export const getAllGroups = async (): Promise<Group[]> => {
+    
+    const response = await fetch(`${API_BASE_URL}/groups`);
+    if (!response.ok) throw new Error('Failed to fetch groups.');
+    const data = await response.json();
+    return data.data;
+};
