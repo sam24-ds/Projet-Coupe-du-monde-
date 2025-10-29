@@ -26,13 +26,17 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
     },
   };
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
-
+  
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
     throw new Error(errorData.message || `Erreur ${response.status}`);
   }
-
-  return response.status === 204 ? {} as T : await response.json();
+  if (response.status === 204 ){
+      return  {} as T 
+  }
+   
+  const r = await response.json();
+  return r.data;
 }
 
 

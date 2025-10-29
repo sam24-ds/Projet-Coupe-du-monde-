@@ -22,11 +22,9 @@ export const Authentification = () => {
       // On appelle la fonction 'login' du contexte
       await login({ email, password });
 
-      // Si c'est un succès, le contexte est mis à jour
-      // et on redirige l'utilisateur
       navigate('/'); 
 
-    } catch (err) { // Gestion de 'unknown'
+    } catch (err) { 
       let errorMessage = "Échec de la connexion.";
       if (err instanceof Error) {
         errorMessage = err.message;

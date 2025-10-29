@@ -1,8 +1,16 @@
-import { type ReactNode, useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; 
+import type { ReactNode } from "react";
 
 export default function ProtectedRoute({ children }: { children: ReactNode}) {
-  const auth = useContext(AuthContext);
-  return auth?.user ? children : <Navigate to="/authentification" />;
+  const { isAuthenticated, isLoading } = useAuth();
+ 
+  if (isLoading) {
+    return <div>Vérification de l'authentification...</div>;
+  }
+  if (!isAuthenticated) {
+    return <Navigate to="/authentification" />;
+  }
+
+  return children; 
 }

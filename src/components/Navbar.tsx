@@ -12,7 +12,7 @@ function Navbar() {
     <nav className="navbar">
       <Link to="/" className="navbar-brand">Coupe du Monde 2026</Link>
       <Link to="/teams" className="navbar-link">Équipes</Link>
-    <Link to="/groups" className="navbar-link">Groupes</Link>
+      <Link to="/groups" className="navbar-link">Groupes</Link>
       <Link to="/cart" className="navbar-cart">
         🛒 Panier ({totalItems})
       </Link>

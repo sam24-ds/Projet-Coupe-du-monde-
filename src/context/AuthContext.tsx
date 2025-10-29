@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   async function login(credentials: UserCredentials) {
     const { user, access_token } = await loginUser(credentials);
     localStorage.setItem("jwt_token", access_token);
+    console.log("Logged in user:", user);
     setUser(user);
   }
 
