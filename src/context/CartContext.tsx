@@ -2,6 +2,7 @@
 
 import {createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import type { Match, TicketCategory } from '../types';
+import toast from 'react-hot-toast';
 
 
 //cle pour le local storage
@@ -14,6 +15,7 @@ export interface CartItem{
     categoryName: string;
     price:number;
     quantity:number;
+    availableSeats: number;
 }
 
 //objet que contiendra notre contexte
@@ -58,25 +60,42 @@ export const CartProvider = ({children}: {children:ReactNode})=>{
     }
   }, [cartItems]);
 
-    const addToCart = (match: Match, categoryName: string, categoryDetails: TicketCategory)=>{
-      
-      //ici on a utilise la "forme fonctionnelle" de setState. C'est la manière la plus sûre
-      //de mettre à jour un état qui dépend de sa valeur précédente.
+const addToCart = (match: Match, categoryName: string, categoryDetails: TicketCategory) => {
+    
+      setCartItems(currentItems => {
+          
+          // 1. On calcule combien de tickets pour ce match son deja dans le panier.
+          const ticketsForThisMatchInCart = currentItems
+            .filter(item => item.matchId === match.id) // On prend tous les articles pour ce match
+            .reduce((total, item) => total + item.quantity, 0); // On fait la somme de leurs quantités
 
-      setCartItems(currentItems =>{
-          //1 -On cherche si l'article existe déjà dans le panier
-          const existingItem = currentItems.find(item =>
-            item.matchId===match.id && item.categoryName === categoryName
+          //Limite globale de 6 tickets par match
+          if (ticketsForThisMatchInCart >= 6) {
+            toast.error("Vous ne pouvez pas ajouter plus de 6 tickets par match.");
+            return currentItems; // On ne modifie pas le panier.
+          }
+          
+          //ici on va travailler sur les categories pour verifier les stocks par categories
+          const existingItem = currentItems.find(item => 
+            item.matchId === match.id && item.categoryName === categoryName
           );
-           
-          //2 - Si l'article existe déjà...
-          if (existingItem) {
-            // ...on crée un NOUVEAU tableau en parcourant l'ancien avec .map()
-            return currentItems.map(item =>
-              item.matchId === match.id && item.categoryName === categoryName
-                ?{ ...item, quantity: item.quantity + 1 } // Si c'est notre article, on crée un NOUVEL objet avec la quantité + 1
 
-                : item // Sinon, on ne change pas l'article
+          //Vérification du stock
+          // La quantité actuelle de l'article spécifique + 1 ne doit pas dépasser le stock
+          const currentQuantityForItem = existingItem ? existingItem.quantity : 0;
+          if (currentQuantityForItem + 1 > categoryDetails.availableSeats) {
+            toast.error("Il n'y a pas assez de places disponibles dans cette catégorie.");
+            return currentItems;
+          }
+          
+          toast.success("Ticket ajouté au panier !");
+
+          // Si l'article existe déjà
+          if (existingItem) {
+            return currentItems.map(item => 
+              item.matchId === match.id && item.categoryName === categoryName
+                ? { ...item, quantity: item.quantity + 1 }
+                : item
             );
           }
 
@@ -88,41 +107,67 @@ export const CartProvider = ({children}: {children:ReactNode})=>{
             categoryName: categoryName,
             price: categoryDetails.price,
             quantity: 1,
+            availableSeats: categoryDetails.availableSeats,
           };
-        // ...on crée un NOUVEAU tableau en copiant les anciens articles et en ajoutant le nouveau
+        // ...on crée un nouveau tableau en copiant les anciens articles et en ajoutant le nouveau
         return [...currentItems, newItem];
         });
     };
 
-    const updateItemQuantity = (matchId: number, categoryName: string, newQuantity: number)=>{
+    const updateItemQuantity = (matchId: number, categoryName: string, newQuantity: number) => {
 
-      setCartItems(currentItems =>{
-        if (newQuantity <=0) {
-        //si la nouvelle quantite est 0 ou moins, on supprime l'article, on utilise .filter() pour créer un nouveau tableau sans l'article à supprimer
-        return currentItems.filter(item => ! (item.matchId === matchId && item.categoryName === categoryName));
-      }
+        setCartItems(currentItems => {
+          //On calcule combien de tickets pour CE match sont dans le panier, sans compter l'article que nous sommes en train de modifier.
+          const otherTicketsForThisMatchInCart = currentItems
+            .filter(item => item.matchId === matchId && item.categoryName !== categoryName)
+            .reduce((total, item) => total + item.quantity, 0);
 
-      // Sinon, on met à jour la quantité de l'article concerné
-      return currentItems.map(item =>
-        item.matchId === matchId && item.categoryName === categoryName
-          ? { ...item, quantity: newQuantity }
-          : item
-      );
-      }) 
+          //Limite globale de 6 tickets par match
+          if (otherTicketsForThisMatchInCart + newQuantity > 6) {
+            toast.error("Vous ne pouvez pas dépasser 6 tickets au total pour ce match.");
+            return currentItems;
+          }
+          
+          const itemToUpdate = currentItems.find(item => 
+            item.matchId === matchId && item.categoryName === categoryName
+          );
+          if (!itemToUpdate) return currentItems;
+
+          //Vérification du stock
+          if (newQuantity > itemToUpdate.availableSeats) {
+            toast.error("Quantité demandée supérieure au stock disponible.");
+            return currentItems;
+          }
+          
+          // Si la nouvelle quantité est 0 ou moins, on supprime l'article
+          if (newQuantity <= 0) {
+            return currentItems.filter(item => 
+              !(item.matchId === matchId && item.categoryName === categoryName)
+            );
+          }
+          
+          // Sinon, on met à jour la quantité
+          return currentItems.map(item =>
+            item.matchId === matchId && item.categoryName === categoryName
+              ? { ...item, quantity: newQuantity }
+              : item
+          );
+    });
     };
 
   const removeFromCart = (matchId: number, categoryName: string) => {
-    setCartItems(currentItems => 
-      currentItems.filter(item => 
-        !(item.matchId === matchId && item.categoryName === categoryName)
-      )
+    
+      setCartItems(currentItems => 
+        currentItems.filter(item => 
+          !(item.matchId === matchId && item.categoryName === categoryName)
+        )
+      );
+    };
+    return (
+      <CartContext.Provider value={{ cartItems, addToCart, updateItemQuantity, removeFromCart }}>
+        {children}
+      </CartContext.Provider>
     );
-  };
-  return (
-    <CartContext.Provider value={{ cartItems, addToCart, updateItemQuantity, removeFromCart }}>
-      {children}
-    </CartContext.Provider>
-  );
 };
 
 
