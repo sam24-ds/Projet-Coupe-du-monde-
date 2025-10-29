@@ -1,4 +1,4 @@
-import { type Match } from "../types";
+import type { Match, Team, Group } from "../types";
 
 export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
 
@@ -6,14 +6,10 @@ export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
 
 export const getAllMatches = async (): Promise<Match[]> =>{
     const response = await fetch(`${API_BASE_URL}/matches/availability`);
-
     if (!response.ok){
         throw new Error('Failed to fetch Match')
-        
     }
-
     const apiResponse = await response.json();
-
     return apiResponse.data;
 }
 
@@ -48,4 +44,22 @@ export const getMtchDetailsById = async (id : string): Promise<Match> => {
   };
   
   return combinedMatchData; 
+};
+
+//fonction pour récupérer toutes les équipes
+export const getAllTeams = async (): Promise<Team[]> => {
+  
+    const response = await fetch(`${API_BASE_URL}/teams`);
+    if (!response.ok) throw new Error('Failed to fetch teams.');
+    const data = await response.json();
+    return data.data;
+};
+
+//fonction pour récupérer tous les groupes
+export const getAllGroups = async (): Promise<Group[]> => {
+    
+    const response = await fetch(`${API_BASE_URL}/groups`);
+    if (!response.ok) throw new Error('Failed to fetch groups.');
+    const data = await response.json();
+    return data.data;
 };
