@@ -1,6 +1,39 @@
-import { type Match } from "../types";
+import { type Match, type UserCredentials, type UserSignupData,type UserProfile,type AuthResponse } from "../types";
 
 export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
+
+
+//Fetch utilisé pour les endpoints privés
+
+export async function authFetch<T>(endpoint: string, options: RequestInit = {}):Promise<T>{
+    const token = localStorage.getItem('jwt_token');
+  
+  const defaultHeaders: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+
+  if (token) {
+    defaultHeaders['Authorization'] = `Bearer ${token}`;
+  }
+
+  //config : en-tetes par defaut + en-tetes données en paramètre
+  const config: RequestInit = {
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
+  };
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Erreur ${response.status}`);
+  }
+
+  return response.status === 204 ? {} as T : await response.json();
+}
+
 
 //Fonction pour recuperer tous les match
 
@@ -49,3 +82,28 @@ export const getMtchDetailsById = async (id : string): Promise<Match> => {
   
   return combinedMatchData; 
 };
+
+
+export function loginUser(credentials: UserCredentials) {
+  return authFetch<AuthResponse>("/auth/signin", {
+    method: "POST",
+    body: JSON.stringify(credentials),
+  });
+}
+export const registerUser = (userData: UserSignupData) => {
+  return authFetch<AuthResponse>('/auth/signup', {
+    method: 'POST',
+    body: JSON.stringify(userData),
+  });
+};
+export async function getMe(token: string) {
+  const res = await fetch(`/auth/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Token invalide");
+  return res.json();
+}
+

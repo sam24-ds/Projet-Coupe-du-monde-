@@ -41,3 +41,24 @@ export interface Match {
     availableSeats:number;
     categories?: MatchCategories;
 }
+
+export interface UserCredentials {
+  email: string;
+  password: string;
+}
+export interface UserSignupData extends UserCredentials {
+  firstname: string;
+  lastname: string;
+  birthDate: string;
+}
+export interface AuthResponse {
+  user: UserProfile;
+  access_token: string;
+}
+export interface UserProfile {
+  id: string;
+  email: string;
+  firstname: string;
+  lastname: string;
+  birthDate: string;
+}
