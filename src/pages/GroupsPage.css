@@ -21,8 +21,10 @@
 }
 
 .group-teams-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 15px;
-  justify-content: center; /* Centre les cartes si l'espace le permet */
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  
+  gap: 1rem;
+  justify-items: center; 
 }

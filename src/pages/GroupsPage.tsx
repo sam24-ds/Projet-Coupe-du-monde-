@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import type { Group, Team } from '../types';
 import { getAllGroups, getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard'; 
+import './GroupsPage.css'
 
 function GroupsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
