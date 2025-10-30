@@ -68,5 +68,6 @@ export interface UserProfile {
   firstname: string;
   lastname: string;
   birthDate: string;
+  createdAt: string;
 }
 
