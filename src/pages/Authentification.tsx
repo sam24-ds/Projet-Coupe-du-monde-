@@ -1,37 +1,42 @@
-// src/pages/LoginPage.tsx
+// src/pages/Authentification.tsx
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Authentification.css'; 
 
 export const Authentification = () => {
-  // On récupère la fonction 'login' de notre contexte
   const { login } = useAuth(); 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from || "/";
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setIsLoading(true);
 
     try {
-      // On appelle la fonction 'login' du contexte
       await login({ email, password });
+      
+      // Petit délai pour s'assurer que l'état est mis à jour
+      setTimeout(() => {
+        navigate(from, { replace: true, state: {} });
+      }, 100);
 
-      // Si c'est un succès, le contexte est mis à jour
-      // et on redirige l'utilisateur
-      navigate('/'); 
-
-    } catch (err) { // Gestion de 'unknown'
-      let errorMessage = "Échec de la connexion.";
+    } catch (err) {
+      let errorMessage = "Échec de la connexion. Vérifiez vos identifiants.";
       if (err instanceof Error) {
         errorMessage = err.message;
       }
       setError(errorMessage);
+      setIsLoading(false);
     }
   };
 
@@ -51,6 +56,7 @@ export const Authentification = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
 
@@ -63,11 +69,12 @@ export const Authentification = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              disabled={isLoading}
             />
           </div>
           
-          <button type="submit" className="auth-button">
-            Se connecter
+          <button type="submit" className="auth-button" disabled={isLoading}>
+            {isLoading ? 'Connexion en cours...' : 'Se connecter'}
           </button>
         </form>
         <p className="auth-switch-link">

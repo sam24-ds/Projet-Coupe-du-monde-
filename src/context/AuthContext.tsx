@@ -1,34 +1,24 @@
-<<<<<<< HEAD
-//context/AuthContext.tsx
-import { createContext, useState, useEffect, type ReactNode } from "react";
-import { loginUser, getMe } from "../services/apiService";
-import type {  UserProfile } from "../types";
-=======
-
 import { createContext, useState, useEffect, type ReactNode, useContext } from "react";
-// 1. IMPORTEZ les nouvelles dépendances
-import { loginUser, getMe, registerUser } from "../services/apiService";
+import { loginUser, getMe, registerUser, logoutUser } from "../services/apiService";
 import type { UserProfile, UserCredentials, UserSignupData } from "../types";
->>>>>>> main
 
 type AuthContextType = {
   user: UserProfile | null;
   isAuthenticated: boolean;
   login: (credentials: UserCredentials) => Promise<void>;
-  // 2. AJOUTEZ 'register' au type
   register: (userData: UserSignupData) => Promise<void>;
-  logout: () => void;
-  isLoading: boolean; // J'ai renommé 'isLoading' pour plus de clarté
+  logout: () => Promise<void>;
+  isLoading: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth must be used within an AuthProvider");
-    }
-    return context;
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -38,33 +28,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isAuthenticated = Boolean(user);
 
   async function login(credentials: UserCredentials) {
-    const { user, access_token } = await loginUser(credentials);
-    localStorage.setItem("jwt_token", access_token);
-    setUser(user);
+    // Le cookie est automatiquement défini par le serveur via Set-Cookie
+    const response = await loginUser(credentials);
+    
+    // On récupère juste les données utilisateur de la réponse
+    const userData = response.data.user;
+    setUser(userData);
   }
 
   async function register(userData: UserSignupData) {
-    const { user, access_token } = await registerUser(userData);
+    // Le cookie est automatiquement défini par le serveur via Set-Cookie
+    const response = await registerUser(userData);
     
-    localStorage.setItem("jwt_token", access_token);
-    setUser(user);
+    // On récupère juste les données utilisateur de la réponse
+    const newUser = response.data.user;
+    setUser(newUser);
   }
 
-  function logout() {
-    localStorage.removeItem("jwt_token");
+  async function logout() {
+    // Appel à l'API pour détruire la session côté serveur
+    await logoutUser();
     setUser(null);
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    if (!token) {
-        setIsLoading(false);
-        return;
-    }
-
+    // Au chargement, on vérifie si l'utilisateur a une session active
+    // via le cookie (pas besoin de vérifier localStorage)
     getMe()
       .then(setUser)
-      .catch(() => logout())
+      .catch(() => {
+        // Pas de session active, c'est normal
+        setUser(null);
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -74,12 +69,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider value={{ 
-        user, 
-        isAuthenticated, 
-        login, 
-        register, // 4. EXPOSEZ 'register' dans la value
-        logout,
-        isLoading
+      user, 
+      isAuthenticated, 
+      login, 
+      register,
+      logout,
+      isLoading
     }}>
       {children}
     </AuthContext.Provider>

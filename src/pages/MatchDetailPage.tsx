@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { type Match } from "../types";
-import { getMtchDetailsById } from "../services/apiService";
+import { getMatchDetailsById } from "../services/apiService"; 
 import './MatchDetailPage.css'
 import { API_BASE_URL } from "../services/apiService";
 import { useCart } from '../context/CartContext';
@@ -21,7 +21,7 @@ function MatchDetailPage(){
         const fetchMatchDetails = async ()=>{
             try{
                 setIsLoading(true);
-                const data = await getMtchDetailsById(id);
+                const data = await getMatchDetailsById (id);
                 //console.log('la data :', data)
                 setMatch(data);
 

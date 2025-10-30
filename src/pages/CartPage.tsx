@@ -1,15 +1,54 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import './CartPage.css'; 
+import { useAuth } from '../context/AuthContext';
+import { addTicketToBooking } from '../services/apiService';
+import toast from 'react-hot-toast';
+import './CartPage.css';
 
 function CartPage() {
+  const { cartItems, removeFromCart, updateItemQuantity, clearCart } = useCart();
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+  const [isProcessing, setIsProcessing] = useState(false);
   
-  const { cartItems, removeFromCart, updateItemQuantity } = useCart();
-
-  // On calcule le total
   const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  
+  const handleProceedToCheckout = async () => {
+    if (!isAuthenticated) {
+      toast.error("Veuillez vous connecter pour continuer.");
+      navigate('/login', { replace: false, state: { from: '/checkout' } });
+      return;
+    }
 
-  // Cas 1: Le panier est vide
+    setIsProcessing(true);
+    const loadingToast = toast.loading("Création de votre réservation...");
+    
+    try {
+      const bookingPromises = cartItems.map(item => 
+        addTicketToBooking({
+          matchId: item.matchId,
+          category: item.categoryName,
+          quantity: item.quantity,
+        })
+      );
+      
+      await Promise.all(bookingPromises);
+
+      toast.dismiss(loadingToast);
+      toast.success("Réservation créée !");
+      
+      clearCart();
+      navigate('/checkout', { replace: true });
+
+    } catch (error: any) {
+      toast.dismiss(loadingToast);
+      toast.error(`Erreur lors de la réservation : ${error.message}`);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   if (cartItems.length === 0) {
     return (
       <div className="cart-container empty-cart">
@@ -19,7 +58,6 @@ function CartPage() {
     );
   }
 
-  // Cas 2: Le panier contient des articles
   return (
     <div className="cart-container">
       <h2>Récapitulatif de votre panier</h2>
@@ -55,7 +93,13 @@ function CartPage() {
       </table>
       <div className="cart-summary">
         <h3>Total général : {totalPrice.toFixed(2)} €</h3>
-        <button className="btn-primary">Passer la commande</button>
+        <button 
+          className="btn-primary"
+          onClick={handleProceedToCheckout} 
+          disabled={isProcessing}
+        >
+          {isProcessing ? "Réservation en cours..." : "Valider et continuer"}
+        </button>
       </div>
     </div>
   );

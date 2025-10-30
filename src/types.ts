@@ -53,15 +53,25 @@ export interface UserCredentials {
   email: string;
   password: string;
 }
-export interface UserSignupData extends UserCredentials {
+
+export interface UserSignupData {
+  email: string;
+  password: string;
   firstname: string;
   lastname: string;
-  birthDate: string;
+  birthDate?: string;
 }
+
+// Type pour la réponse d'authentification
 export interface AuthResponse {
-  user: UserProfile;
-  access_token: string;
+  success: boolean;
+  message: string;
+  data: {
+    user: UserProfile;
+    
+  };
 }
+
 export interface UserProfile {
   id: string;
   email: string;
