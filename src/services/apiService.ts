@@ -33,13 +33,7 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
   const r = await response.json();
   console.log("request endpoint:", endpoint);
   console.log("API Response:", r);
-  if (r.access_token) {
-        return {
-          user: r.data.user,
-          access_token: r.access_token
-        } as T;
-    }
-    return r.data as T ;
+  return r.data as T ;
 }
 
 
