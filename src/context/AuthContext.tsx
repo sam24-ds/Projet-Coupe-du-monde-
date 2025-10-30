@@ -8,10 +8,9 @@ type AuthContextType = {
   user: UserProfile | null;
   isAuthenticated: boolean;
   login: (credentials: UserCredentials) => Promise<void>;
-  // 2. AJOUTEZ 'register' au type
   register: (userData: UserSignupData) => Promise<void>;
   logout: () => void;
-  isLoading: boolean; // J'ai renommé 'isLoading' pour plus de clarté
+  isLoading: boolean; 
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -32,6 +31,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   async function login(credentials: UserCredentials) {
     const { user, access_token } = await loginUser(credentials);
+    console.log("Access Token:", access_token);
     localStorage.setItem("jwt_token", access_token);
     console.log("Logged in user:", user);
     setUser(user);

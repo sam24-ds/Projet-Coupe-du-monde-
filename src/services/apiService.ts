@@ -36,7 +36,12 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
   }
    
   const r = await response.json();
-  return r.data;
+  console.log("API Response:", r);
+  if (r.data !== undefined) {
+      return r.data as T ;
+    }
+    
+    return r as T;
 }
 
 
