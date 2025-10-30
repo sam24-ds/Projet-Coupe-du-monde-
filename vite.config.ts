@@ -14,9 +14,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://worldcup2026.shrp.dev', // ton API
+        target: 'https://worldcup2026.shrp.dev', 
         changeOrigin: true,
-        secure: false, // ignore les certificats auto-signés si besoin
+        secure: false, 
         rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
