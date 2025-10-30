@@ -1,7 +1,6 @@
 
 import { createContext, useState, useEffect, type ReactNode, useContext } from "react";
-// 1. IMPORTEZ les nouvelles dépendances
-import { loginUser, getMe, registerUser } from "../services/apiService";
+import { loginUser, getMe, registerUser, LogoutUser } from "../services/apiService";
 import type { UserProfile, UserCredentials, UserSignupData } from "../types";
 
 type AuthContextType = {
@@ -9,8 +8,8 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: (credentials: UserCredentials) => Promise<void>;
   register: (userData: UserSignupData) => Promise<void>;
-  logout: () => void;
-  isLoading: boolean; 
+  logout: () => Promise<void>; 
+  isLoading: boolean;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -29,38 +28,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAuthenticated = Boolean(user);
 
+
   async function login(credentials: UserCredentials) {
-    const { user, access_token } = await loginUser(credentials);
-    console.log("Access Token:", access_token);
-    localStorage.setItem("jwt_token", access_token);
-    console.log("Logged in user:", user);
-    setUser(user);
+    await loginUser(credentials);
+    const userData = await getMe();
+    setUser(userData);
   }
 
-  async function register(userData: UserSignupData) {
-    const { user, access_token } = await registerUser(userData);
-    
-    localStorage.setItem("jwt_token", access_token);
-    setUser(user);
+  async function register(user: UserSignupData) {
+    await registerUser(user);
+
+    const userData = await getMe();
+    setUser(userData);
   }
 
-  function logout() {
-    localStorage.removeItem("jwt_token");
+ 
+  async function logout() {
+    LogoutUser();
     setUser(null);
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt_token");
-    if (!token) {
-        setIsLoading(false);
-        return;
-    }
 
     getMe()
-      .then(setUser)
-      .catch(() => logout())
+      .then(userData => {
+        setUser(userData);
+      })
+      .catch(() => {
+        setUser(null);
+      })
       .finally(() => setIsLoading(false));
-  }, []);
+  }, []); 
 
   if (isLoading) {
     return <div>Chargement de la session...</div>;
@@ -71,7 +69,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user, 
         isAuthenticated, 
         login, 
-        register, // 4. EXPOSEZ 'register' dans la value
+        register,
         logout,
         isLoading
     }}>
