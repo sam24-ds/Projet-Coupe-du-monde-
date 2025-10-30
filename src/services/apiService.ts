@@ -7,15 +7,10 @@ export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
 //Fetch utilisé pour les endpoints privés
 
 export async function authFetch<T>(endpoint: string, options: RequestInit = {}):Promise<T>{
-    const token = localStorage.getItem('jwt_token');
   
   const defaultHeaders: HeadersInit = {
     'Content-Type': 'application/json',
   };
-
-  if (token) {
-    defaultHeaders['Authorization'] = `Bearer ${token}`;
-  }
 
   //config : en-tetes par defaut + en-tetes données en paramètre
   const config: RequestInit = {
@@ -36,8 +31,9 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
   }
    
   const r = await response.json();
+  console.log("request endpoint:", endpoint);
   console.log("API Response:", r);
-  if (r.data !== undefined && r.access_token) {
+  if (r.access_token) {
         return {
           user: r.data.user,
           access_token: r.access_token
@@ -96,17 +92,23 @@ export function loginUser(credentials: UserCredentials) {
   return authFetch<AuthResponse>("/auth/signin", {
     method: "POST",
     body: JSON.stringify(credentials),
+    credentials: 'include'
   });
 }
 export const registerUser = (userData: UserSignupData) => {
   return authFetch<AuthResponse>('/auth/signup', {
     method: 'POST',
     body: JSON.stringify(userData),
+    credentials: 'include'
   });
 };
 export const getMe = (): Promise<UserProfile> => {
-    return authFetch<UserProfile>('/auth/me');
+    return authFetch<UserProfile>('/auth/me',{credentials: 'include'});
 }
+export const LogoutUser = () => {
+    return authFetch<UserProfile>('/auth/signout',{method: 'POST',credentials: 'include'});
+}
+
 //fonction pour récupérer toutes les équipes
 export const getAllTeams = async (): Promise<Team[]> => {
   
