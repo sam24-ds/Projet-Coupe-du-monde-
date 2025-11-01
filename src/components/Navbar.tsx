@@ -14,8 +14,12 @@ function Navbar() {
       <Link to="/" className="navbar-brand">Coupe du Monde 2026</Link>
       <Link to="/teams" className="navbar-link">Équipes</Link>
       <Link to="/groups" className="navbar-link">Groupes</Link>
-      {isAuthenticated && <Link to="/profile" className="navbar-cart">
+      {isAuthenticated ? 
+      <Link to="/profile" className="navbar-profile">
         profile 
+      </Link>
+      : <Link to="/authentification" className="navbar-profile">
+        Se connecter
       </Link>
       }
       { <Link to="/cart" className="navbar-cart">

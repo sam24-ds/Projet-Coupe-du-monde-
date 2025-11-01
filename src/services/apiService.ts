@@ -19,6 +19,7 @@ export async function authFetch<T>(endpoint: string, options: RequestInit = {}):
       ...defaultHeaders,
       ...options.headers,
     },
+    credentials: 'include'
   };
   const response = await fetch(`${API_BASE_URL}${endpoint}`, config);
   
@@ -86,21 +87,19 @@ export function loginUser(credentials: UserCredentials) {
   return authFetch<AuthResponse>("/auth/signin", {
     method: "POST",
     body: JSON.stringify(credentials),
-    credentials: 'include'
   });
 }
 export const registerUser = (userData: UserSignupData) => {
   return authFetch<AuthResponse>('/auth/signup', {
     method: 'POST',
     body: JSON.stringify(userData),
-    credentials: 'include'
   });
 };
 export const getMe = (): Promise<UserProfile> => {
-    return authFetch<UserProfile>('/auth/me',{credentials: 'include'});
+    return authFetch<UserProfile>('/auth/me');
 }
 export const LogoutUser = () => {
-    return authFetch<UserProfile>('/auth/signout',{method: 'POST',credentials: 'include'});
+    return authFetch<UserProfile>('/auth/signout');
 }
 
 //fonction pour récupérer toutes les équipes

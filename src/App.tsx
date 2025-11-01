@@ -18,11 +18,10 @@ function App(){
       <Navbar />
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       <Routes>
-        <Route path="/profile" element={
-        <ProtectedRoute>
-          <ProfilePage />
-        </ProtectedRoute>
-        } />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<ProfilePage />} />
+          {/*ajoute ici les routes securisé c'est mieux que nodeChildren que j'avais mis en place avant */}
+        </Route>
         <Route path="/" element={<HomePage/>} />
         <Route path="/match/:id" element={<MatchDetailPage/>}/>
         <Route path="/cart" element={<CartPage />} />

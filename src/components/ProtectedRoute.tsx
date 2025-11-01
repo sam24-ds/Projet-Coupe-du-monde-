@@ -1,16 +1,15 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; 
-import type { ReactNode } from "react";
 
-export default function ProtectedRoute({ children }: { children: ReactNode}) {
+export default function ProtectedRoute() {
   const { isAuthenticated, isLoading } = useAuth();
- 
+  const location = useLocation();
   if (isLoading) {
     return <div>Vérification de l'authentification...</div>;
   }
   if (!isAuthenticated) {
-    return <Navigate to="/authentification" />;
+    return <Navigate to="/authentification" state={{ from: location }}/>;
   }
 
-  return children; 
+  return <Outlet/>;
 }
