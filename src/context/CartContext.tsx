@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 
 //cle pour le local storage
-const CART_STORAGE_KEY = 'worldcup_cart';
+export const CART_STORAGE_KEY = 'worldcup_cart';
 
 //forme des articles dans le panier
 export interface CartItem{
@@ -50,6 +50,7 @@ export const CartProvider = ({children}: {children:ReactNode})=>{
       return [];
     }
     });
+ 
 
      useEffect(() => {
     // Ce code s'exécutera chaque fois que l'état 'cartItems' change.
@@ -156,7 +157,8 @@ const addToCart = (match: Match, categoryName: string, categoryDetails: TicketCa
     };
 
   const removeFromCart = (matchId: number, categoryName: string) => {
-    
+
+  
       setCartItems(currentItems => 
         currentItems.filter(item => 
           !(item.matchId === matchId && item.categoryName === categoryName)

@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   async function logout() {
     LogoutUser();
     setUser(null);
+    localStorage.removeItem('worldcup_cart');
   }
 
   useEffect(() => {
