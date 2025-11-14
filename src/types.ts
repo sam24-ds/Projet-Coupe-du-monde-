@@ -71,3 +71,65 @@ export interface UserProfile {
   createdAt: string;
 }
 
+export interface Ticket {
+  id: string;
+  userId: string;
+  matchId: number;
+  category: "CATEGORY_1" | "CATEGORY_2" | "CATEGORY_3" | "VIP";
+  price: number;
+  status: "pending_payment" | "used" | "confirmed";
+  seatNumber: string;
+  qrCode: string;
+  expiresAt: string;    
+  paymentDate: string;  
+  validatedAt: string; 
+  match: TicketMatchInfo;
+}
+
+
+export interface TicketMatchInfo {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  matchDate: string; 
+  stadium: string;
+}
+
+
+export interface AddToCartData {
+  tickets: Ticket[];
+  totalPrice: number;
+  expiresAt: string; 
+}
+
+
+export interface AddToCartApiResponse {
+  success: boolean;
+  message: string;
+  data: AddToCartData;
+}
+export interface AddTicketPayload {
+  matchId: number;
+  category: string;
+  quantity: number;
+}
+export interface GroupedTickets {
+  pending: Ticket[];
+  confirmed: Ticket[];
+  used: Ticket[];
+}
+
+
+export interface TicketCounts {
+  total: number;
+  pending: number;
+  confirmed: number;
+  used: number;
+}
+
+
+export interface MyTicketsData {
+  tickets: Ticket[];
+  grouped: GroupedTickets;
+  counts: TicketCounts;
+}

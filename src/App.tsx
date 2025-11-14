@@ -11,15 +11,20 @@ import TeamsPage from './pages/TeamsPage';
 import GroupsPage from './pages/GroupsPage';
 import { Toaster } from 'react-hot-toast';
 import { RegisterPage } from "./pages/RegisterPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import { AuthProvider } from './context/AuthContext.tsx';
+
 
 function App(){
   return(
     <CartProvider>
+      <AuthProvider>
       <Navbar />
       <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
           {/*ajoute ici les routes securisé c'est mieux que nodeChildren que j'avais mis en place avant */}
         </Route>
         <Route path="/" element={<HomePage/>} />
@@ -30,6 +35,7 @@ function App(){
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/authentification" element={<Authentification/>}/>
       </Routes>   
+      </AuthProvider>
     </CartProvider>
   );
 }

@@ -2,9 +2,10 @@ import type { Match, Team, Group } from "../types";
 import MatchCard from "../components/MatchCard";
 import { useState, useEffect, useMemo } from "react";
 import { getAllMatches, getAllTeams, getAllGroups } from "../services/apiService";
+import { useSearchParams } from "react-router-dom"; 
 
-// ✅ PARTIE RAJOUTÉE : Importation de l'image de fond pour le header
-import homePageBackground from "../worldcup_bg.jpg"; // Assurez-vous que le chemin est correct
+// Importation de l'image de fond pour le header
+import homePageBackground from "../worldcup_bg.jpg"; 
 
 function HomePage() {
     const [matches, setMatches] = useState<Match[]>([]);
@@ -18,7 +19,11 @@ function HomePage() {
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTeamId, setSelectedTeamId] = useState('');
     const [selectedGroupId, setSelectedGroupId] = useState('');
+    
+    const [searchParams, setSearchParams] = useSearchParams();
 
+
+    // 1. CHARGEMENT DES DONNÉES ET SYNCHRONISATION INITIALE
     useEffect(() => {
         const loadInitialData = async () => {
             try {
@@ -31,6 +36,19 @@ function HomePage() {
                 setMatches(matchesData);
                 setTeams(teamsData);
                 setGroups(groupsData);
+                
+                // Lire les paramètres d'URL APRÈS LE CHARGEMENT DES DONNÉES
+                const teamIdFromUrl = searchParams.get('team');
+                const groupIdFromUrl = searchParams.get('group');
+                
+                // Mettre à jour les états APRES le chargement
+                if (teamIdFromUrl) {
+                    setSelectedTeamId(teamIdFromUrl);
+                }
+                if (groupIdFromUrl) {
+                    setSelectedGroupId(groupIdFromUrl);
+                }
+
             } catch (err: any) {
                 setError(err.message);
             } finally {
@@ -39,34 +57,44 @@ function HomePage() {
         };
 
         loadInitialData();
-    }, []);
+    }, []); 
+    
+    // 2. SYNCHRONISATION DES ÉTATS DE FILTRE AVEC L'URL (POUR LA NAVIGATION EXTERNE)
+    // Ce useEffect gère le cas où l'utilisateur clique sur un lien externe (TeamCard, GroupsPage)
+    useEffect(() => {
+         const teamIdFromUrl = searchParams.get('team');
+         const groupIdFromUrl = searchParams.get('group');
 
-    // FILTRES
-    const filteredMatches = useMemo(() => {
+         if (teamIdFromUrl !== selectedTeamId) {
+             setSelectedTeamId(teamIdFromUrl || '');
+         }
+         if (groupIdFromUrl !== selectedGroupId) {
+             setSelectedGroupId(groupIdFromUrl || '');
+         }
+    }, [searchParams]); // S'exécute quand l'URL change
+
+
+const filteredMatches = useMemo(() => {
         let temp = matches;
-
-        if (selectedDate) {
-            temp = temp.filter(match => match.date.startsWith(selectedDate));
-        }
-
+        // ... (Filtre par Date) ...
+        
+        // --- Filtre par Équipe (SYNCHRONISÉ) ---
         if (selectedTeamId) {
-            temp = temp.filter(
-                match =>
-                    match.homeTeam.id === parseInt(selectedTeamId) ||
-                    match.awayTeam.id === parseInt(selectedTeamId)
-            );
-        }
+            if (searchParams.get('team') !== selectedTeamId) {
+                setSearchParams({ team: selectedTeamId }, { replace: true });
+            }
+            // ... (Application du filtre temp = temp.filter(...)) ...
+        } // ... (Logique else if pour nettoyer l'URL) ...
 
+        // --- Filtre par Groupe (SYNCHRONISÉ) ---
         if (selectedGroupId) {
-            temp = temp.filter(
-                match =>
-                    match.homeTeam.groupId === parseInt(selectedGroupId) ||
-                    match.awayTeam.groupId === parseInt(selectedGroupId)
-            );
+             if (searchParams.get('group') !== selectedGroupId) {
+                 setSearchParams({ group: selectedGroupId }, { replace: true });
+             }
+            // ... (Application du filtre temp = temp.filter(...)) ...
         }
-
         return temp;
-    }, [matches, selectedDate, selectedTeamId, selectedGroupId]);
+    }, [matches, selectedDate, selectedTeamId, selectedGroupId, setSearchParams, searchParams]);
 
     const availableDates = useMemo(
         () => [...new Set(matches.map(m => m.date.split("T")[0]))].sort(),
@@ -77,6 +105,7 @@ function HomePage() {
         setSelectedDate('');
         setSelectedTeamId('');
         setSelectedGroupId('');
+        setSearchParams({}, { replace: true }); 
     };
 
     if (isLoading) {
@@ -88,8 +117,8 @@ function HomePage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50"> {/* Ajout de min-h-screen et bg-gray-50 pour un meilleur rendu */}
-            {/* ✅ NOUVELLE SECTION : Conteneur pour le titre et les filtres avec image de fond */}
+        <div className="min-h-screen bg-gray-50"> 
+            {/* HEADER AVEC IMAGE DE FOND POUR TITRE ET FILTRES */}
             <div 
                 className="relative bg-cover bg-center py-12 px-4 shadow-xl"
                 style={{ backgroundImage: `url(${homePageBackground})` }}
@@ -97,7 +126,7 @@ function HomePage() {
                 {/* Overlay sombre pour améliorer la lisibilité du texte */}
                 <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
                 
-                <div className="relative z-10 max-w-5xl mx-auto text-white"> {/* Contenu au-dessus de l'overlay */}
+                <div className="relative z-10 max-w-5xl mx-auto text-white"> 
                     <h1 className="text-4xl font-extrabold text-center mb-8">
                         Billetterie Coupe du Monde 2026
                     </h1>
@@ -109,7 +138,6 @@ function HomePage() {
                         <select
                             value={selectedDate}
                             onChange={e => setSelectedDate(e.target.value)}
-                            // Couleurs ajustées pour être visibles sur fond sombre
                             className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="">Filtrer par date</option>
@@ -124,7 +152,6 @@ function HomePage() {
                         <select
                             value={selectedTeamId}
                             onChange={e => setSelectedTeamId(e.target.value)}
-                            // Couleurs ajustées pour être visibles sur fond sombre
                             className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="">Filtrer par équipe</option>
@@ -139,7 +166,6 @@ function HomePage() {
                         <select
                             value={selectedGroupId}
                             onChange={e => setSelectedGroupId(e.target.value)}
-                            // Couleurs ajustées pour être visibles sur fond sombre
                             className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
                         >
                             <option value="">Filtrer par groupe</option>
@@ -161,7 +187,7 @@ function HomePage() {
                 </div>
             </div>
 
-            {/* LISTE DES MATCHS (Maintenant dans un conteneur séparé en dessous de la section avec image) */}
+            {/* LISTE DES MATCHS */}
             <main className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredMatches.length > 0 ? (
                     filteredMatches.map(match => (

@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 import loginBackground from '../login_bg.jpg'; 
@@ -13,6 +13,9 @@ export const Authentification = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  
+  // ✅ FONCTIONNALITÉ FUSIONNÉE : Récupère l'objet location pour la redirection
+  const location = useLocation(); 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +23,10 @@ export const Authentification = () => {
 
     try {
       await login({ email, password });
-      navigate('/'); 
+
+      // ✅ FONCTIONNALITÉ FUSIONNÉE : Redirection intelligente vers la page précédente
+      const from = location.state?.from?.pathname || '/';
+      navigate(from, { replace: true });
 
     } catch (err) { 
       let errorMessage = "Échec de la connexion. Vérifiez vos identifiants.";
@@ -40,7 +46,6 @@ export const Authentification = () => {
       <div className="absolute inset-0 bg-black opacity-70 z-0"></div>
 
       {/* Conteneur du formulaire */}
-      {/* ✅ CHANGEMENT : Opacité passée à 70% (bg-opacity-70) */}
       <div className="bg-white bg-opacity-70 p-10 rounded-2xl shadow-2xl w-full max-w-md z-10 border-t-4 border-blue-600">
         <h2 className="text-3xl font-black text-gray-800 mb-6 text-center">
           Connexion

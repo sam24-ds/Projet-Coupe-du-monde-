@@ -3,16 +3,16 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router-dom';
+// ✅ Importation conservée de la version HEAD
 import { AuthProvider } from './context/AuthContext.tsx';
-import './index.css';
-
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <BrowserRouter> 
-     <AuthProvider>
-      <App />
-     </AuthProvider>
-    </BrowserRouter>
-  </StrictMode>,
+    <StrictMode>
+        <BrowserRouter> 
+            {/* ✅ Utilisation du AuthProvider pour englober l'application */}
+            <AuthProvider>
+                <App />
+            </AuthProvider>
+        </BrowserRouter>
+    </StrictMode>,
 )

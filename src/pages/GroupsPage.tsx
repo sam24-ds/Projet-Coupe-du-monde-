@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import type { Group, Team } from "../types";
 import { getAllGroups, getAllTeams } from "../services/apiService";
 import TeamCard from "../components/TeamCard";
+import { Link } from 'react-router-dom'; // Ajout de l'import Link
 
 // ✅ PARTIE RAJOUTÉE : Importation de l'image de fond pour le header
 import groupsPageBackground from "../groups_bg.jpg"; // <--- Assurez-vous que le chemin est correct !
@@ -107,32 +108,38 @@ function GroupsPage() {
                         </div>
                     ) : (
                         filteredGroups.map((group) => (
-                            <div
-                                key={group.id}
-                                className="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200"
+                            // ✅ FONCTIONNALITÉ FUSIONNÉE : La carte est enveloppée dans un Link
+                            <Link 
+                                key={group.id} 
+                                to={`/?group=${group.id}`} 
+                                className="block group-link" // Utiliser "block" pour que le Link prenne toute la largeur
                             >
-                                {/* Titre du groupe */}
-                                <div className="flex items-center mb-6 pb-4 border-b-2 border-gray-200">
-                                    <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-xl flex items-center justify-center shadow-lg mr-4">
-                                        <span className="text-3xl font-black text-white">
-                                            {group.name}
-                                        </span>
+                                <div
+                                    className="bg-white rounded-2xl shadow-xl p-8 border-2 border-gray-200 group-hover:border-blue-500 transition-colors duration-300"
+                                >
+                                    {/* Titre du groupe */}
+                                    <div className="flex items-center mb-6 pb-4 border-b-2 border-gray-200">
+                                        <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-green-600 rounded-xl flex items-center justify-center shadow-lg mr-4">
+                                            <span className="text-3xl font-black text-white">
+                                                {group.name}
+                                            </span>
+                                        </div>
+                                        <h2 className="text-3xl font-black text-gray-900 group-hover:text-blue-700 transition-colors">
+                                            Groupe {group.name}
+                                        </h2>
                                     </div>
-                                    {/* ✅ CHANGEMENT : Nom du groupe en noir (text-gray-900) */}
-                                    <h2 className="text-3xl font-black text-gray-900">
-                                        Groupe {group.name}
-                                    </h2>
-                                </div>
 
-                                {/* Liste des équipes du groupe */}
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                                    {teams
-                                        .filter((team) => team.groupId === group.id)
-                                        .map((team) => (
-                                            <TeamCard key={team.id} team={team} />
-                                        ))}
+                                    {/* Liste des équipes du groupe */}
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                                        {teams
+                                            .filter((team) => team.groupId === group.id)
+                                            .map((team) => (
+                                                // TeamCard n'est plus cliquable ici, car le parent Link gère le clic
+                                                <TeamCard key={team.id} team={team} />
+                                            ))}
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         ))
                     )}
                 </div>

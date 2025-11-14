@@ -4,7 +4,7 @@ import type { Team } from '../types';
 import { getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard';
 
-// ✅ PARTIE RAJOUTÉE : Importation de l'image de fond pour le header
+// ✅ PARTIE CONSERVÉE : Importation de l'image de fond pour le header
 import teamsPageBackground from "../teams_bg.jpg"; // <--- Assurez-vous que le chemin est correct !
 
 function TeamsPage() {
@@ -12,6 +12,7 @@ function TeamsPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [selectedContinent, setSelectedContinent] = useState('');
 
+    // ✅ LOGIQUE CONSERVÉE : Chargement des données au montage
     useEffect(() => {
         getAllTeams().then(data => {
             setTeams(data);
@@ -45,7 +46,7 @@ function TeamsPage() {
                 <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
 
                 <div className="max-w-6xl mx-auto relative z-10 text-white">
-                    {/* ✅ CHANGEMENT : Suppression du logo ⚽ */}
+                    {/* Suppression du logo ⚽ */}
                     <h1 className="text-5xl font-extrabold text-center mb-4">
                         Équipes Qualifiées
                     </h1>
@@ -54,7 +55,7 @@ function TeamsPage() {
                         Sélectionnez un continent pour filtrer les participants
                     </p>
 
-                    {/* Filtre par Continent (équivalent à .filters-container et .filter-select) */}
+                    {/* Filtre par Continent */}
                     <div className="flex justify-center">
                         <select 
                             value={selectedContinent} 
@@ -70,7 +71,7 @@ function TeamsPage() {
             </div>
 
 
-            {/* Grille des équipes (équivalent à .teams-grid) */}
+            {/* Grille des équipes */}
             <div className="max-w-6xl mx-auto px-4 py-10">
                 {filteredTeams.length === 0 ? (
                     <p className="text-center text-gray-500 mt-6">Aucune équipe trouvée pour ce continent.</p>
