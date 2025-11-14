@@ -9,7 +9,7 @@ function TeamsPage() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedContinent, setSelectedContinent] = useState('');
-
+  
   useEffect(() => {
     getAllTeams().then(data => {
       setTeams(data);

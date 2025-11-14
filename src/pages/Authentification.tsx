@@ -1,7 +1,7 @@
 // src/pages/LoginPage.tsx
 
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Authentification.css'; 
 
@@ -13,7 +13,7 @@ export const Authentification = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-
+  const location = useLocation(); 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -22,7 +22,9 @@ export const Authentification = () => {
       // On appelle la fonction 'login' du contexte
       await login({ email, password });
 
-      navigate('/'); 
+      const from = location.state?.from?.pathname || '/';
+
+      navigate(from, { replace: true });
 
     } catch (err) { 
       let errorMessage = "Échec de la connexion.";

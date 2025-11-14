@@ -1,5 +1,5 @@
 
-import type { Match, Team, Group,UserCredentials, UserSignupData,  UserProfile, AuthResponse} from "../types";
+import type { Match, Team, Group,UserCredentials, UserSignupData,  UserProfile, AuthResponse, Ticket, AddToCartData, AddTicketPayload, MyTicketsData} from "../types";
 
 export const API_BASE_URL = 'https://worldcup2026.shrp.dev';
 
@@ -99,7 +99,7 @@ export const getMe = (): Promise<UserProfile> => {
     return authFetch<UserProfile>('/auth/me');
 }
 export const LogoutUser = () => {
-    return authFetch<UserProfile>('/auth/signout');
+    return authFetch<UserProfile>('/auth/signout',{method: 'POST' });
 }
 
 //fonction pour récupérer toutes les équipes
@@ -118,4 +118,46 @@ export const getAllGroups = async (): Promise<Group[]> => {
     if (!response.ok) throw new Error('Failed to fetch groups.');
     const data = await response.json();
     return data.data;
+};
+
+//TICKETS ET RÉSERVATIONS
+
+
+export const addTicketToBooking = (payload: AddTicketPayload): Promise<AddToCartData> => {
+  return authFetch<AddToCartData>("/tickets", { 
+    method: "POST", 
+    body: JSON.stringify(payload),
+    credentials: 'include' 
+  });
+};
+
+// Renverra la liste des tickets payés (Ticket[])
+export const payPendingTickets = (): Promise<Ticket[]> => {
+  return authFetch<Ticket[]>("/tickets/pay-pending", { 
+    method: "POST",
+    credentials: 'include'
+  });
+};
+
+// Renverra la liste des tickets achetés (Ticket[])
+export const getMyTickets = async (): Promise<Ticket[]> => {
+  const data = await  authFetch<MyTicketsData>("/tickets", { 
+    credentials: 'include' 
+  });
+  return data.tickets;
+};
+
+// Renverra l'état actuel du panier (pending)
+export const getPendingTickets = (): Promise<AddToCartData> => {
+  return authFetch<AddToCartData>("/tickets/pending", { 
+    credentials: 'include' 
+  });
+};
+
+// Renverra l'état mis à jour du panier après suppression
+export const removeTicketFromBooking = (ticketId: string): Promise<AddToCartData> => {
+  return authFetch<AddToCartData>(`/tickets/${ticketId}`, { 
+    method: "DELETE",
+    credentials: 'include' 
+  });
 };

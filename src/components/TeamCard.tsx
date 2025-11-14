@@ -1,6 +1,7 @@
 import type { Team } from '../types';
 import { API_BASE_URL } from '../services/apiService';
 import './TeamCard.css';
+import { Link } from 'react-router-dom';
 
 interface TeamCardProps {
   team: Team;
@@ -8,6 +9,8 @@ interface TeamCardProps {
 
 function TeamCard({ team }: TeamCardProps) {
   return (
+    <Link to={`/?team=${team.id}`}>
+
     <div className="team-card">
       <img 
         src={`${API_BASE_URL}${team.flagImagePath}`} 
@@ -16,6 +19,7 @@ function TeamCard({ team }: TeamCardProps) {
       />
       <h3>{team.name}</h3>
     </div>
+    </Link>
   );
 }
 

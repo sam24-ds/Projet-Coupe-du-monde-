@@ -2,6 +2,7 @@
 import { createContext, useState, useEffect, type ReactNode, useContext } from "react";
 import { loginUser, getMe, registerUser, LogoutUser } from "../services/apiService";
 import type { UserProfile, UserCredentials, UserSignupData } from "../types";
+import { useCart } from "./CartContext";
 
 type AuthContextType = {
   user: UserProfile | null;
@@ -27,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   const isAuthenticated = Boolean(user);
-
+  const {clearCart} = useCart();
 
   async function login(credentials: UserCredentials) {
     await loginUser(credentials);
@@ -46,6 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   async function logout() {
     LogoutUser();
     setUser(null);
+    clearCart();
   }
 
   useEffect(() => {

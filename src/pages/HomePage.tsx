@@ -3,6 +3,7 @@ import MatchCard from "../components/MatchCard"
 import { useState, useEffect, useMemo } from "react";
 import { getAllMatches, getAllTeams, getAllGroups} from "../services/apiService";
 import './HomePage.css'
+import { useSearchParams } from "react-router-dom";
 
 function HomePage() {
   // constante pour stocker les match recuperer depuis l'api
@@ -21,7 +22,7 @@ function HomePage() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTeamId, setSelectedTeamId] = useState('');
   const [selectedGroupId, setSelectedGroupId] = useState('');
-
+  const [searchParams,setSearchParams] = useSearchParams();
 useEffect(()=>{
   const loadInitialData = async () =>{
     try{
@@ -46,7 +47,18 @@ useEffect(()=>{
 
   loadInitialData();
 }, []);
-
+useEffect(() => {
+    // On vérifie si le paramètre "team" et le parametre "group" existe dans l'URL
+    const teamIdFromUrl = searchParams.get('team');
+    const groupIdFromUrl = searchParams.get('group');
+    
+    if (teamIdFromUrl) {
+      setSelectedTeamId(teamIdFromUrl);
+    }
+    if (groupIdFromUrl) {
+      setSelectedGroupId(groupIdFromUrl);
+    }
+  }, [searchParams]);
 // FILTRES
 
 const filteredMatches = useMemo(() =>{
@@ -60,22 +72,25 @@ const filteredMatches = useMemo(() =>{
     }
 
     //Filtre par ÉQUIPE
+
+    //Filtre par GROUPE
+    if (selectedGroupId) {
+      // On filtre directement sur les données du match.
+      setSearchParams({group: selectedGroupId});
+      tempMatches = tempMatches.filter(match =>
+        // On vérifie si le groupId de l'équipe à domicile OU de l'équipe à l'extérieur correspond au groupe sélectionné.
+        match.homeTeam.groupId === parseInt(selectedGroupId) ||
+        match.awayTeam.groupId === parseInt(selectedGroupId)
+      );
+    }
     if (selectedTeamId) {
+      setSearchParams({team: selectedTeamId});
       tempMatches = tempMatches.filter(match =>
         match.homeTeam.id === parseInt(selectedTeamId) ||
         match.awayTeam.id === parseInt(selectedTeamId)
       );
     }
 
-    //Filtre par GROUPE
-    if (selectedGroupId) {
-      // On filtre directement sur les données du match.
-     tempMatches = tempMatches.filter(match =>
-        // On vérifie si le groupId de l'équipe à domicile OU de l'équipe à l'extérieur correspond au groupe sélectionné.
-        match.homeTeam.groupId === parseInt(selectedGroupId) ||
-        match.awayTeam.groupId === parseInt(selectedGroupId)
-      );
-    }
     return tempMatches;
 },[matches, selectedDate, selectedTeamId, selectedGroupId])//tableau de dépendances;
 

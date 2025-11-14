@@ -5,6 +5,7 @@ import type { Group, Team } from '../types';
 import { getAllGroups, getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard'; 
 import './GroupsPage.css'
+import { Link } from 'react-router-dom';
 
 function GroupsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -58,17 +59,19 @@ function GroupsPage() {
 
       <div className="groups-container">
         {filteredGroups.map(group => (
-          <div key={group.id} className="group-card">
-            <h2>Groupe {group.name}</h2>
-            <div className="group-teams-grid">
-              {/* Pour chaque groupe, on filtre la liste complète des équipes */}
-              {teams
-                .filter(team => team.groupId === group.id)
-                .map(team => (
-                  <TeamCard key={team.id} team={team} />
-                ))}
+          <Link key={group.id} to={`/?group=${group.id}`}>
+            <div className="group-card">
+              <h2>Groupe {group.name}</h2>
+              <div className="group-teams-grid">
+                {/* Pour chaque groupe, on filtre la liste complète des équipes */}
+                {teams
+                  .filter(team => team.groupId === group.id)
+                  .map(team => (
+                    <TeamCard key={team.id} team={team} />
+                  ))}
+              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>
