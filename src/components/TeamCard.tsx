@@ -1,22 +1,39 @@
-import type { Team } from '../types';
-import { API_BASE_URL } from '../services/apiService';
-import './TeamCard.css';
+// src/components/TeamCard.tsx
+import React from "react";
+import type { Team } from "../types"; // ✅ On importe le type Team
+import { API_BASE_URL } from "../services/apiService";
 
 interface TeamCardProps {
-  team: Team;
+  team: Team; // ✅ Typage explicite de la prop
 }
 
-function TeamCard({ team }: TeamCardProps) {
+const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
   return (
-    <div className="team-card">
-      <img 
-        src={`${API_BASE_URL}${team.flagImagePath}`} 
-        alt={`Drapeau ${team.name}`} 
-        className="team-card-flag"
-      />
-      <h3>{team.name}</h3>
+    <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 text-center hover:scale-110 border-2 border-blue-200 hover:border-blue-500 group">
+      {/* Drapeau */}
+      <div className="w-24 h-24 mx-auto bg-gradient-to-br from-blue-50 to-green-50 rounded-full flex items-center justify-center shadow-md mb-4 border-4 border-blue-300 group-hover:border-yellow-400 transition-all">
+        {team.flagImagePath ? (
+          <img
+            src={`${API_BASE_URL}${team.flagImagePath}`}
+            alt={team.name}
+            className="w-16 h-16 rounded-full object-cover"
+          />
+        ) : (
+          <span className="text-5xl">⚽</span>
+        )}
+      </div>
+
+      {/* Nom de l'équipe */}
+      <h3 className="font-black text-gray-800 text-lg group-hover:text-blue-600 transition-colors">
+        {team.name}
+      </h3>
+
+      {/* Continent */}
+      <p className="text-sm text-gray-500 mt-1 font-semibold">
+        {team.continent}
+      </p>
     </div>
   );
-}
+};
 
 export default TeamCard;

@@ -1,144 +1,180 @@
-import type { Match, Team, Group } from "../types"
-import MatchCard from "../components/MatchCard"
+import type { Match, Team, Group } from "../types";
+import MatchCard from "../components/MatchCard";
 import { useState, useEffect, useMemo } from "react";
-import { getAllMatches, getAllTeams, getAllGroups} from "../services/apiService";
-import './HomePage.css'
+import { getAllMatches, getAllTeams, getAllGroups } from "../services/apiService";
+
+// ✅ PARTIE RAJOUTÉE : Importation de l'image de fond pour le header
+import homePageBackground from "../worldcup_bg.jpg"; // Assurez-vous que le chemin est correct
 
 function HomePage() {
-  // constante pour stocker les match recuperer depuis l'api
-  const [matches, setMatches] = useState<Match[]>([]);
-  // constante pour stocker les equipes 
-  const [teams, setTeams] = useState<Team[]>([]);
-  // constante pour stocker les groupes
-  const [groups, setGroups] = useState<Group[]>([]);
+    const [matches, setMatches] = useState<Match[]>([]);
+    const [teams, setTeams] = useState<Team[]>([]);
+    const [groups, setGroups] = useState<Group[]>([]);
 
-  //constante pour stocker l'etat du chargement des matchs
-  const [isLoding, setIsLoding] = useState(true);
-  //constante pour stocker les erreurs
-  const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-  //Etats pour les filtres
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedTeamId, setSelectedTeamId] = useState('');
-  const [selectedGroupId, setSelectedGroupId] = useState('');
+    // états des filtres
+    const [selectedDate, setSelectedDate] = useState('');
+    const [selectedTeamId, setSelectedTeamId] = useState('');
+    const [selectedGroupId, setSelectedGroupId] = useState('');
 
-useEffect(()=>{
-  const loadInitialData = async () =>{
-    try{
-        const [matchesData, teamsData, groupsData] = await Promise.all([
-        getAllMatches(), getAllTeams(), getAllGroups()
-        ]);
+    useEffect(() => {
+        const loadInitialData = async () => {
+            try {
+                const [matchesData, teamsData, groupsData] = await Promise.all([
+                    getAllMatches(),
+                    getAllTeams(),
+                    getAllGroups(),
+                ]);
 
-      setMatches(matchesData);
-      setTeams(teamsData);
-      setGroups(groupsData);
-      console.log("matche data : ", matchesData)
-      console.log("matche data : ", teamsData)
-      console.log("matche data : ", groupsData)
+                setMatches(matchesData);
+                setTeams(teamsData);
+                setGroups(groupsData);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    } catch (err: any){
-      setError(err.message);
+        loadInitialData();
+    }, []);
 
-    }finally{
-      setIsLoding(false);
-    }
-  };
+    // FILTRES
+    const filteredMatches = useMemo(() => {
+        let temp = matches;
 
-  loadInitialData();
-}, []);
+        if (selectedDate) {
+            temp = temp.filter(match => match.date.startsWith(selectedDate));
+        }
 
-// FILTRES
+        if (selectedTeamId) {
+            temp = temp.filter(
+                match =>
+                    match.homeTeam.id === parseInt(selectedTeamId) ||
+                    match.awayTeam.id === parseInt(selectedTeamId)
+            );
+        }
 
-const filteredMatches = useMemo(() =>{
-  let tempMatches = matches;
+        if (selectedGroupId) {
+            temp = temp.filter(
+                match =>
+                    match.homeTeam.groupId === parseInt(selectedGroupId) ||
+                    match.awayTeam.groupId === parseInt(selectedGroupId)
+            );
+        }
 
-  //Filtre par DATE
-    if (selectedDate) {
-      tempMatches = tempMatches.filter(match => 
-        match.date.startsWith(selectedDate) // Compare le début de la date ISO (YYYY-MM-DD)
-      );
-    }
+        return temp;
+    }, [matches, selectedDate, selectedTeamId, selectedGroupId]);
 
-    //Filtre par ÉQUIPE
-    if (selectedTeamId) {
-      tempMatches = tempMatches.filter(match =>
-        match.homeTeam.id === parseInt(selectedTeamId) ||
-        match.awayTeam.id === parseInt(selectedTeamId)
-      );
-    }
+    const availableDates = useMemo(
+        () => [...new Set(matches.map(m => m.date.split("T")[0]))].sort(),
+        [matches]
+    );
 
-    //Filtre par GROUPE
-    if (selectedGroupId) {
-      // On filtre directement sur les données du match.
-     tempMatches = tempMatches.filter(match =>
-        // On vérifie si le groupId de l'équipe à domicile OU de l'équipe à l'extérieur correspond au groupe sélectionné.
-        match.homeTeam.groupId === parseInt(selectedGroupId) ||
-        match.awayTeam.groupId === parseInt(selectedGroupId)
-      );
-    }
-    return tempMatches;
-},[matches, selectedDate, selectedTeamId, selectedGroupId])//tableau de dépendances;
-
-
-
-  //On extrait les dates uniques pour le filtre par date
-const availableDates = useMemo(() => 
-    [...new Set(matches.map(match => match.date.split('T')[0]))].sort(),
-    [matches]
-  );
-
-if (isLoding){
-  return <p style={{ textAlign: 'center', fontSize:'1.5em'}}> Chargements des matchs ...</p>
-}
-
-if (error){
-  return <p style={{color: 'red', textAlign:'center'}}>Erreur: {error}</p>;
-}
-
-
-// Fonction pour réinitialiser tous les filtres
     const clearFilters = () => {
-    setSelectedDate('');
-    setSelectedTeamId('');
-    setSelectedGroupId('');
-  };
+        setSelectedDate('');
+        setSelectedTeamId('');
+        setSelectedGroupId('');
+    };
 
+    if (isLoading) {
+        return <p className="text-center text-xl mt-10">Chargement des matchs...</p>;
+    }
 
-return (
-    <div className="app-container">
-      <h1>Billetterie pour la Coupe du Monde 2026</h1>
-      
-      <div className="filters-container">
-        {/* Filtre par Date */}
-        <select value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="filter-select">
-          <option value="">Filtrer par date</option>
-          {availableDates.map(date => <option key={date} value={date}>{new Date(date).toLocaleDateString('fr-FR')}</option>)}
-        </select>
-        
-        {/* Filtre par Équipe */}
-        <select value={selectedTeamId} onChange={e => setSelectedTeamId(e.target.value)} className="filter-select">
-          <option value="">Filtrer par équipe</option>
-          {teams.map(team => <option key={team.id} value={team.id}>{team.name}</option>)}
-        </select>
+    if (error) {
+        return <p className="text-center text-red-500 text-lg">{error}</p>;
+    }
 
-        {/* Filtre par Groupe */}
-        <select value={selectedGroupId} onChange={e => setSelectedGroupId(e.target.value)} className="filter-select">
-          <option value="">Filtrer par groupe</option>
-          {groups.map(group => <option key={group.id} value={group.id}>Groupe {group.name}</option>)}
-        </select>
+    return (
+        <div className="min-h-screen bg-gray-50"> {/* Ajout de min-h-screen et bg-gray-50 pour un meilleur rendu */}
+            {/* ✅ NOUVELLE SECTION : Conteneur pour le titre et les filtres avec image de fond */}
+            <div 
+                className="relative bg-cover bg-center py-12 px-4 shadow-xl"
+                style={{ backgroundImage: `url(${homePageBackground})` }}
+            >
+                {/* Overlay sombre pour améliorer la lisibilité du texte */}
+                <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+                
+                <div className="relative z-10 max-w-5xl mx-auto text-white"> {/* Contenu au-dessus de l'overlay */}
+                    <h1 className="text-4xl font-extrabold text-center mb-8">
+                        Billetterie Coupe du Monde 2026
+                    </h1>
 
-        <button onClick={clearFilters} className="clear-filter-btn">Réinitialiser</button>
-      </div>
+                    {/* FILTRES */}
+                    <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center">
+                        
+                        {/* Filtre Date */}
+                        <select
+                            value={selectedDate}
+                            onChange={e => setSelectedDate(e.target.value)}
+                            // Couleurs ajustées pour être visibles sur fond sombre
+                            className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Filtrer par date</option>
+                            {availableDates.map(date => (
+                                <option key={date} value={date}>
+                                    {new Date(date).toLocaleDateString("fr-FR")}
+                                </option>
+                            ))}
+                        </select>
 
-      <main className="match-list">
-        {filteredMatches.length > 0 ? (
-          filteredMatches.map(match => <MatchCard key={match.id} match={match} />)
-        ) : (
-          <p>Aucun match ne correspond à vos critères de recherche.</p>
-        )}
-      </main>
-    </div>
-  );
+                        {/* Filtre Équipe */}
+                        <select
+                            value={selectedTeamId}
+                            onChange={e => setSelectedTeamId(e.target.value)}
+                            // Couleurs ajustées pour être visibles sur fond sombre
+                            className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Filtrer par équipe</option>
+                            {teams.map(team => (
+                                <option key={team.id} value={team.id}>
+                                    {team.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* Filtre Groupe */}
+                        <select
+                            value={selectedGroupId}
+                            onChange={e => setSelectedGroupId(e.target.value)}
+                            // Couleurs ajustées pour être visibles sur fond sombre
+                            className="px-4 py-2 rounded-lg border border-gray-300 bg-gray-700 text-white shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">Filtrer par groupe</option>
+                            {groups.map(group => (
+                                <option key={group.id} value={group.id}>
+                                    Groupe {group.name}
+                                </option>
+                            ))}
+                        </select>
+
+                        {/* RESET */}
+                        <button
+                            onClick={clearFilters}
+                            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg shadow-md transition-colors"
+                        >
+                            Réinitialiser
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* LISTE DES MATCHS (Maintenant dans un conteneur séparé en dessous de la section avec image) */}
+            <main className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+                {filteredMatches.length > 0 ? (
+                    filteredMatches.map(match => (
+                        <MatchCard key={match.id} match={match} />
+                    ))
+                ) : (
+                    <p className="col-span-full text-center text-gray-500">
+                        Aucun match ne correspond à vos critères.
+                    </p>
+                )}
+            </main>
+        </div>
+    );
 }
 
 export default HomePage;
