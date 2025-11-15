@@ -4,15 +4,16 @@ import { useState, useEffect, useMemo } from 'react';
 import type { Group, Team } from '../types';
 import { getAllGroups, getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard'; 
-import './GroupsPage.css'
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function GroupsPage() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupName, setSelectedGroupName] = useState('');
+  const navigate = useNavigate();
 
+  // ... (toute votre logique useEffect, useMemo, handleGroupClick reste la même) ...
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -31,39 +32,67 @@ function GroupsPage() {
     loadData();
   }, []);
   
-  //FILTRAGE
   const filteredGroups = useMemo(() => {
     if (!selectedGroupName) {
-      return groups; // Si aucun filtre, on affiche tous les groupes
+      return groups; 
     }
     return groups.filter(group => group.name === selectedGroupName);
   }, [groups, selectedGroupName]);
 
-  if (isLoading) return <p>Chargement des groupes...</p>;
+  const handleGroupClick = (groupId: number) => {
+    navigate(`/?group=${groupId}`);
+  };
+
+
+  if (isLoading) return <p className="text-center text-xl mt-10">Chargement des groupes...</p>;
 
   return (
-    <div className="page-container">
-      <h1>Groupes de la Compétition</h1>
+    // 1. Fond de page gris clair pour faire ressortir les cartes
+    <div className="min-h-screen bg-gray-100 py-10">
+      <div className="max-w-5xl mx-auto px-4">
+        <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-900">Groupes de la Compétition</h1>
 
-      {/* Filtre par nom de groupe */}
-      <div className="filters-container">
-        <select 
-          value={selectedGroupName} 
-          onChange={e => setSelectedGroupName(e.target.value)}
-          className="filter-select"
-        >
-          <option value="">Voir tous les groupes</option>
-          {groups.map(g => <option key={g.id} value={g.name}>Groupe {g.name}</option>)}
-        </select>
-      </div>
+        {/* Filtre <select> */}
+        <div className="flex justify-center mb-10">
+          <select 
+            value={selectedGroupName} 
+            onChange={e => setSelectedGroupName(e.target.value)}
+            className="px-4 py-3 rounded-lg border border-gray-300 bg-white shadow-sm focus:ring-blue-500 focus:border-blue-500 text-lg"
+          >
+            <option value="">Voir tous les groupes</option>
+            {groups.map(g => <option key={g.id} value={g.name}>Groupe {g.name}</option>)}
+          </select>
+        </div>
 
-      <div className="groups-container">
-        {filteredGroups.map(group => (
-          <Link key={group.id} to={`/?group=${group.id}`}>
-            <div className="group-card">
-              <h2>Groupe {group.name}</h2>
-              <div className="group-teams-grid">
-                {/* Pour chaque groupe, on filtre la liste complète des équipes */}
+        {/* Conteneur pour la liste des groupes */}
+        <div className="flex flex-col gap-10"> 
+          {filteredGroups.map(group => (
+            
+            // 2. LA CARTE DE GROUPE (cliquable)
+            <div 
+              key={group.id} 
+              // Nouveau style de carte : shadow-lg, bordure subtile, et effet de survol
+              className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden cursor-pointer 
+                         transition-all duration-300 ease-in-out 
+                         hover:shadow-2xl hover:scale-[1.02]" // Effet de "soulèvement"
+              onClick={() => handleGroupClick(group.id)}
+            >
+              
+              {/* 3. En-tête de la carte */}
+              <div className="flex justify-between items-center bg-gray-50 p-5 border-b border-gray-200">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  Groupe {group.name}
+                </h2>
+                {/* 4. Indicateur de clic */}
+                <span className="text-sm font-medium text-blue-600 hidden md:block">
+                  (Cliquer pour filtrer les matchs)
+                </span>
+              </div>
+              
+              {/* 5. Grille des équipes (réorganisée) */}
+              <div 
+                className="p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 justify-items-center"
+              >
                 {teams
                   .filter(team => team.groupId === group.id)
                   .map(team => (
@@ -71,8 +100,8 @@ function GroupsPage() {
                   ))}
               </div>
             </div>
-          </Link>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

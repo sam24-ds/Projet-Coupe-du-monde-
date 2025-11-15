@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getPendingTickets, payPendingTickets, removeTicketFromBooking } from '../services/apiService';
 import toast from 'react-hot-toast';
 import { type Ticket, type AddToCartData } from '../types';
+import '../pages/CheckoutPage.css'; 
 
 function CheckoutPage() {
   const [pendingBooking, setPendingBooking] = useState<AddToCartData | null>(null);
