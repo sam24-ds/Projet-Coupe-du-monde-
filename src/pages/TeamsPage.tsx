@@ -5,7 +5,7 @@ import { getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard';
 
 // ✅ PARTIE CONSERVÉE : Importation de l'image de fond pour le header
-import teamsPageBackground from "../teams_bg.jpg"; // <--- Assurez-vous que le chemin est correct !
+import teamsPageBackground from "../img/teams_bg.jpg"; // <--- Assurez-vous que le chemin est correct !
 
 function TeamsPage() {
     const [teams, setTeams] = useState<Team[]>([]);

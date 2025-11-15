@@ -3,7 +3,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
 // ✅ Importation du nouveau logo
-import Fifa2026Logo from '../fifa2026_logo.png'; // <--- Assurez-vous que le chemin est correct et que c'est un PNG pour la transparence !
+import Fifa2026Logo from '../img/fifa2026_logo.png'; // <--- Assurez-vous que le chemin est correct et que c'est un PNG pour la transparence !
 
 function Navbar() {
   const { cartItems } = useCart();

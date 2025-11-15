@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; 
 
 // ✅ PARTIE RAJOUTÉE : Importation de l'image de fond (doit être le même chemin que LoginPage)
-import loginBackground from '../login_bg.jpg'; 
+import loginBackground from '../img/login_bg.jpg'; 
 
 export const RegisterPage = () => {
     const { register } = useAuth(); 

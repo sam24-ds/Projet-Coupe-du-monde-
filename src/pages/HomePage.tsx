@@ -4,26 +4,24 @@ import { useState, useEffect, useMemo } from "react";
 import { getAllMatches, getAllTeams, getAllGroups } from "../services/apiService";
 import { useSearchParams } from "react-router-dom"; 
 
-// Importation de l'image de fond pour le header
-import homePageBackground from "../worldcup_bg.jpg"; 
+// Importation de l'image de fond (conservée)
+import homePageBackground from "../img/worldcup_bg.jpg"; 
 
 function HomePage() {
     const [matches, setMatches] = useState<Match[]>([]);
     const [teams, setTeams] = useState<Team[]>([]);
     const [groups, setGroups] = useState<Group[]>([]);
-
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // états des filtres
+    // états des filtres (votre source de vérité)
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTeamId, setSelectedTeamId] = useState('');
     const [selectedGroupId, setSelectedGroupId] = useState('');
     
     const [searchParams, setSearchParams] = useSearchParams();
 
-
-    // 1. CHARGEMENT DES DONNÉES ET SYNCHRONISATION INITIALE
+    // 1. CHARGEMENT DES DONNÉES (Uniquement)
     useEffect(() => {
         const loadInitialData = async () => {
             try {
@@ -32,69 +30,59 @@ function HomePage() {
                     getAllTeams(),
                     getAllGroups(),
                 ]);
-
                 setMatches(matchesData);
                 setTeams(teamsData);
                 setGroups(groupsData);
-                
-                // Lire les paramètres d'URL APRÈS LE CHARGEMENT DES DONNÉES
-                const teamIdFromUrl = searchParams.get('team');
-                const groupIdFromUrl = searchParams.get('group');
-                
-                // Mettre à jour les états APRES le chargement
-                if (teamIdFromUrl) {
-                    setSelectedTeamId(teamIdFromUrl);
-                }
-                if (groupIdFromUrl) {
-                    setSelectedGroupId(groupIdFromUrl);
-                }
-
             } catch (err: any) {
                 setError(err.message);
             } finally {
                 setIsLoading(false);
             }
         };
-
         loadInitialData();
     }, []); 
-    
-    // 2. SYNCHRONISATION DES ÉTATS DE FILTRE AVEC L'URL (POUR LA NAVIGATION EXTERNE)
-    // Ce useEffect gère le cas où l'utilisateur clique sur un lien externe (TeamCard, GroupsPage)
+
+
     useEffect(() => {
-         const teamIdFromUrl = searchParams.get('team');
-         const groupIdFromUrl = searchParams.get('group');
-
-         if (teamIdFromUrl !== selectedTeamId) {
-             setSelectedTeamId(teamIdFromUrl || '');
-         }
-         if (groupIdFromUrl !== selectedGroupId) {
-             setSelectedGroupId(groupIdFromUrl || '');
-         }
-    }, [searchParams]); // S'exécute quand l'URL change
-
-
-const filteredMatches = useMemo(() => {
-        let temp = matches;
-        // ... (Filtre par Date) ...
+        const searchParams = new URLSearchParams();
+        selectedTeamId != ''?searchParams.set('team', selectedTeamId):searchParams.delete('team');
+        selectedGroupId != ''?searchParams.set('group', selectedGroupId):searchParams.delete('group');
+        selectedDate != ''?searchParams.set('date', selectedDate):searchParams.delete('date');
+        setSearchParams(searchParams,{ replace: true});
+    }, [selectedTeamId, selectedGroupId, selectedDate]);
+    useEffect(() => {
+        const teamIdFromUrl = searchParams.get('team') || '';
+        const groupIdFromUrl = searchParams.get('group') || '';
+        const dateFromUrl = searchParams.get('date') || '';
         
-        // --- Filtre par Équipe (SYNCHRONISÉ) ---
-        if (selectedTeamId) {
-            if (searchParams.get('team') !== selectedTeamId) {
-                setSearchParams({ team: selectedTeamId }, { replace: true });
-            }
-            // ... (Application du filtre temp = temp.filter(...)) ...
-        } // ... (Logique else if pour nettoyer l'URL) ...
+        setSelectedTeamId(teamIdFromUrl);
+        setSelectedGroupId(groupIdFromUrl);
+        setSelectedDate(dateFromUrl);
+    }, [searchParams]);
+    const filteredMatches = useMemo(() => {
+        let temp = matches;
 
-        // --- Filtre par Groupe (SYNCHRONISÉ) ---
+        if (selectedDate) {
+            temp = temp.filter(match => match.date.startsWith(selectedDate));
+        }
+        
+        if (selectedTeamId) {
+            temp = temp.filter(match =>
+                match.homeTeam.id === parseInt(selectedTeamId) ||
+                match.awayTeam.id === parseInt(selectedTeamId)
+            );
+        }
+        
         if (selectedGroupId) {
-             if (searchParams.get('group') !== selectedGroupId) {
-                 setSearchParams({ group: selectedGroupId }, { replace: true });
-             }
-            // ... (Application du filtre temp = temp.filter(...)) ...
+
+            temp = temp.filter(match =>
+                (match.homeTeam.groupId && match.homeTeam.groupId === parseInt(selectedGroupId)) ||
+                (match.awayTeam.groupId && match.awayTeam.groupId === parseInt(selectedGroupId))
+            );
         }
         return temp;
-    }, [matches, selectedDate, selectedTeamId, selectedGroupId, setSearchParams, searchParams]);
+    }, [matches, selectedDate, selectedTeamId, selectedGroupId]); // Dépendances propres
+
 
     const availableDates = useMemo(
         () => [...new Set(matches.map(m => m.date.split("T")[0]))].sort(),
@@ -105,7 +93,7 @@ const filteredMatches = useMemo(() => {
         setSelectedDate('');
         setSelectedTeamId('');
         setSelectedGroupId('');
-        setSearchParams({}, { replace: true }); 
+        // setSearchParams({}, { replace: true }); // 'useEffect 3' s'en chargera
     };
 
     if (isLoading) {
@@ -118,20 +106,18 @@ const filteredMatches = useMemo(() => {
 
     return (
         <div className="min-h-screen bg-gray-50"> 
-            {/* HEADER AVEC IMAGE DE FOND POUR TITRE ET FILTRES */}
+            {/* HEADER (Nouveau design conservé) */}
             <div 
                 className="relative bg-cover bg-center py-12 px-4 shadow-xl"
                 style={{ backgroundImage: `url(${homePageBackground})` }}
             >
-                {/* Overlay sombre pour améliorer la lisibilité du texte */}
                 <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
-                
                 <div className="relative z-10 max-w-5xl mx-auto text-white"> 
                     <h1 className="text-4xl font-extrabold text-center mb-8">
                         Billetterie Coupe du Monde 2026
                     </h1>
 
-                    {/* FILTRES */}
+                    {/* FILTRES (Le JSX est bon) */}
                     <div className="flex flex-col md:flex-row gap-4 mb-8 justify-center">
                         
                         {/* Filtre Date */}
@@ -187,7 +173,7 @@ const filteredMatches = useMemo(() => {
                 </div>
             </div>
 
-            {/* LISTE DES MATCHS */}
+            {/* LISTE DES MATCHS (Le JSX est bon) */}
             <main className="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredMatches.length > 0 ? (
                     filteredMatches.map(match => (

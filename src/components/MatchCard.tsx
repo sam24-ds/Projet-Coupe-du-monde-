@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { API_BASE_URL } from "../services/apiService"; 
 
 // Importations d'images pour le design
-import stadiumBgCard from '../stadium_bg_card.jpg'; 
+import stadiumBgCard from '../img/stadium_bg_card.jpg'; 
 
 interface MatchCard {
   match: Match;

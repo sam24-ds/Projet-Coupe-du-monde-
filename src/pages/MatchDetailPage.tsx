@@ -16,7 +16,7 @@ import { ArrowLeft, MapPin, Building2, Ticket, DollarSign } from 'lucide-react';
 
 // Importation de l'image de fond du stade
 
-import stadiumBackground from "../sta.jpg"; 
+import stadiumBackground from "../img/sta.jpg"; 
 
 
 

@@ -7,9 +7,9 @@ import { addTicketToBooking } from '../services/apiService';
 import toast from 'react-hot-toast'; // Assurez-vous d'avoir 'react-hot-toast' installé
 
 // Importation de l'image de fond pour le header du panier (panier plein)
-import cartHeaderBackground from "../cart_header_bg.jpg"; 
+import cartHeaderBackground from "../img/cart_header_bg.jpg"; 
 // Utilisez la même image pour le panier vide
-import emptyCartBackground from '../cart_header_bg.jpg'; 
+import emptyCartBackground from '../img/cart_header_bg.jpg'; 
 
 function CartPage() {
     // FUSION DES HOOKS ET PROPS

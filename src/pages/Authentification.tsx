@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-import loginBackground from '../login_bg.jpg'; 
+import loginBackground from '../img/login_bg.jpg'; 
 
 export const Authentification = () => {
   const { login } = useAuth(); 
