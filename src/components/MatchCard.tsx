@@ -1,6 +1,7 @@
 import { type Match } from "../types";
 import { Link } from "react-router-dom";
-import { API_BASE_URL } from "../services/apiService"; 
+import { API_BASE_URL } from "../services/apiService";
+import { translateTeamName } from "../utils/translations";
 
 // Importations d'images pour le design
 import stadiumBgCard from '../img/stadium_bg_card.jpg'; 
@@ -36,12 +37,12 @@ function MatchCard({ match }: MatchCard) {
               className="w-16 h-16 rounded-full border-2 border-gray-500 shadow-md mb-2"
             />
             <span className="font-bold text-gray-800 text-sm">
-              {match.homeTeam.name}
+              {translateTeamName(match.homeTeam.name)}
             </span>
           </div>
 
           <div className="flex flex-col items-center px-4">
-            {/* ✅ CHANGEMENT : Le bloc VS passe en BLEU */}
+            {/* CHANGEMENT : Le bloc VS passe en BLEU */}
             <div className="bg-blue-600 text-white font-black text-xl px-5 py-3 rounded-lg shadow-lg">
               VS
             </div>
@@ -62,7 +63,7 @@ function MatchCard({ match }: MatchCard) {
               className="w-16 h-16 rounded-full border-2 border-gray-500 shadow-md mb-2"
             />
             <span className="font-bold text-gray-800 text-sm">
-              {match.awayTeam.name}
+              {translateTeamName(match.awayTeam.name)}
             </span>
           </div>
         </div>

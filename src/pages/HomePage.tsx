@@ -2,7 +2,8 @@ import type { Match, Team, Group } from "../types";
 import MatchCard from "../components/MatchCard";
 import { useState, useEffect, useMemo } from "react";
 import { getAllMatches, getAllTeams, getAllGroups } from "../services/apiService";
-import { useSearchParams } from "react-router-dom"; 
+import { translateTeamName } from '../utils/translations';
+import { useSearchParams } from "react-router-dom";
 
 // Importation de l'image de fond 
 import homePageBackground from "../img/worldcup_bg.jpg"; 
@@ -143,7 +144,7 @@ function HomePage() {
                             <option value="">Filtrer par équipe</option>
                             {teams.map(team => (
                                 <option key={team.id} value={team.id}>
-                                    {team.name}
+                                    {translateTeamName(team.name)}
                                 </option>
                             ))}
                         </select>
