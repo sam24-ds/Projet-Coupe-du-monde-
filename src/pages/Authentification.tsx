@@ -14,7 +14,7 @@ export const Authentification = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   
-  // ✅ FONCTIONNALITÉ FUSIONNÉE : Récupère l'objet location pour la redirection
+  //Récupère l'objet location pour la redirection
   const location = useLocation(); 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,7 +24,7 @@ export const Authentification = () => {
     try {
       await login({ email, password });
 
-      // ✅ FONCTIONNALITÉ FUSIONNÉE : Redirection intelligente vers la page précédente
+      //Redirection intelligente vers la page précédente
       const from = location.state?.from?.pathname || '/';
       navigate(from, { replace: true });
 
