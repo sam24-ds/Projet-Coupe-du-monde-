@@ -10,7 +10,7 @@ import { useCart } from "../context/CartContext";
 
 // Note : DollarSign est remplacé par Ticket dans le bouton ci-dessous
 
-import { ArrowLeft, MapPin, Building2, Ticket, DollarSign } from 'lucide-react'; 
+import { ArrowLeft, MapPin, Building2, Ticket } from 'lucide-react'; 
 
 
 
