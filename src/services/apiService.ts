@@ -131,7 +131,7 @@ export const addTicketToBooking = (payload: AddTicketPayload): Promise<AddToCart
   });
 };
 
-// Renverra la liste des tickets payés (Ticket[])
+// Renvoi la liste des tickets payés (Ticket[])
 export const payPendingTickets = (): Promise<Ticket[]> => {
   return authFetch<Ticket[]>("/tickets/pay-pending", { 
     method: "POST",
@@ -139,7 +139,7 @@ export const payPendingTickets = (): Promise<Ticket[]> => {
   });
 };
 
-// Renverra la liste des tickets achetés (Ticket[])
+// Renvoi la liste des tickets achetés (Ticket[])
 export const getMyTickets = async (): Promise<Ticket[]> => {
   const data = await  authFetch<MyTicketsData>("/tickets", { 
     credentials: 'include' 
@@ -147,14 +147,14 @@ export const getMyTickets = async (): Promise<Ticket[]> => {
   return data.tickets;
 };
 
-// Renverra l'état actuel du panier (pending)
+// Renvoi l'état actuel du panier (pending)
 export const getPendingTickets = (): Promise<AddToCartData> => {
   return authFetch<AddToCartData>("/tickets/pending", { 
     credentials: 'include' 
   });
 };
 
-// Renverra l'état mis à jour du panier après suppression
+// Renvoi l'état mis à jour du panier après suppression
 export const removeTicketFromBooking = (ticketId: string): Promise<AddToCartData> => {
   return authFetch<AddToCartData>(`/tickets/${ticketId}`, { 
     method: "DELETE",

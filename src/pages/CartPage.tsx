@@ -4,11 +4,11 @@ import { Zap, DollarSign, TrendingUp, TrendingDown, Clock, Tag } from 'lucide-re
 import { useState } from 'react'; 
 import { useAuth } from '../context/AuthContext';
 import { addTicketToBooking } from '../services/apiService';
-import toast from 'react-hot-toast'; // Assurez-vous d'avoir 'react-hot-toast' installé
+import toast from 'react-hot-toast'; 
 
 // Importation de l'image de fond pour le header du panier (panier plein)
 import cartHeaderBackground from "../img/cart_header_bg.jpg"; 
-// Utilisez la même image pour le panier vide
+// La même image pour le panier vide
 import emptyCartBackground from '../img/cart_header_bg.jpg'; 
 
 function CartPage() {

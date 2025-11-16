@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { getAllMatches, getAllTeams, getAllGroups } from "../services/apiService";
 import { useSearchParams } from "react-router-dom"; 
 
-// Importation de l'image de fond (conservée)
+// Importation de l'image de fond 
 import homePageBackground from "../img/worldcup_bg.jpg"; 
 
 function HomePage() {
@@ -14,7 +14,7 @@ function HomePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // états des filtres (votre source de vérité)
+    // états des filtres 
     const [selectedDate, setSelectedDate] = useState('');
     const [selectedTeamId, setSelectedTeamId] = useState('');
     const [selectedGroupId, setSelectedGroupId] = useState('');
