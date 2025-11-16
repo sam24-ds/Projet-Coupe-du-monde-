@@ -4,15 +4,14 @@ import type { Team } from '../types';
 import { getAllTeams } from '../services/apiService';
 import TeamCard from '../components/TeamCard';
 
-// ✅ PARTIE CONSERVÉE : Importation de l'image de fond pour le header
-import teamsPageBackground from "../img/teams_bg.jpg"; // <--- Assurez-vous que le chemin est correct !
-
+//Importation de l'image de fond pour le header
+import teamsPageBackground from "../img/teams_bg.jpg"; //
 function TeamsPage() {
     const [teams, setTeams] = useState<Team[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [selectedContinent, setSelectedContinent] = useState('');
 
-    // ✅ LOGIQUE CONSERVÉE : Chargement des données au montage
+    //Chargement des données au montage
     useEffect(() => {
         getAllTeams().then(data => {
             setTeams(data);
@@ -46,7 +45,7 @@ function TeamsPage() {
                 <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
 
                 <div className="max-w-6xl mx-auto relative z-10 text-white">
-                    {/* Suppression du logo ⚽ */}
+                    
                     <h1 className="text-5xl font-extrabold text-center mb-4">
                         Équipes Qualifiées
                     </h1>

@@ -2,12 +2,12 @@ import { useContext, useState, useEffect } from "react"; //useState et useEffect
 import { AuthContext } from "../context/AuthContext";
 import { User, LogOut, Ticket, Clock, CheckCircle, Link } from "lucide-react"; // icônes
 import { getMyTickets } from '../services/apiService'; 
-import type { Ticket as TicketType } from '../types'; // Renommer Ticket pour éviter le conflit avec l'icône Lucide
+import type { Ticket as TicketType } from '../types'; //Ticket est renommer pour éviter le conflit avec l'icône Lucide
 
 export default function ProfilePage() {
     const auth = useContext(AuthContext);
     
-    // NOUVEL ÉTAT DE FONCTIONNALITÉ : Gestion des tickets
+    //Gestion des tickets
     const [myTickets, setMyTickets] = useState<TicketType[]>([]);
     const [isLoadingTickets, setIsLoadingTickets] = useState(true); // Renommé pour éviter le conflit
 
@@ -17,7 +17,7 @@ export default function ProfilePage() {
 
     const { user, logout } = auth;
 
-    // ✅ LOGIQUE FUSIONNÉE : Charger les tickets de l'utilisateur
+    //Charger les tickets de l'utilisateur
     useEffect(() => {
         if (!user) return; // Ne charge rien si l'utilisateur n'est pas identifié
 

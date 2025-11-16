@@ -62,7 +62,7 @@ export const RegisterPage = () => {
           className="min-h-screen flex items-center justify-center bg-gray-900 relative p-4"
           style={{ backgroundImage: `url(${loginBackground})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-            {/* Overlay (Assombrit l'image pour que le formulaire soit lisible) */}
+            {/* Overlay*/}
             <div className="absolute inset-0 bg-black opacity-70 z-0"></div>
 
             {/* Conteneur du formulaire */}
