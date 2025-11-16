@@ -1,6 +1,7 @@
 import React from "react";
 import type { Team } from "../types";
 import { API_BASE_URL } from "../services/apiService";
+import { translateTeamName } from '../utils/translations';
 import { Link } from 'react-router-dom';
 
 
@@ -30,7 +31,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
 
                 {/* Nom de l'équipe */}
                 <h3 className="font-black text-gray-800 text-lg group-hover:text-blue-600 transition-colors">
-                    {team.name}
+                    {translateTeamName(team.name)}
                 </h3>
 
                 {/* Continent */}
