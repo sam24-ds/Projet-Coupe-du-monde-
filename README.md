@@ -17,3 +17,5 @@
 **Professeur :** Alexandre Leroux  
 **Date de rendu :** 16/11/2025  
 **Formation :** L3 MIASHS – IDMC – Université de Lorraine
+
+## Lien vers le depot Git : https://github.com/sam24-ds/Projet-Coupe-du-monde-
