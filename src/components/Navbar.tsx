@@ -2,8 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
-// ✅ Importation du nouveau logo
-import Fifa2026Logo from '../img/fifa2026_logo.png'; // <--- Assurez-vous que le chemin est correct et que c'est un PNG pour la transparence !
+//Importation du nouveau logo
+import Fifa2026Logo from '../img/fifa2026_logo.png'; 
 
 function Navbar() {
   const { cartItems } = useCart();
@@ -23,7 +23,7 @@ function Navbar() {
           to="/"
           className="text-2xl font-extrabold text-gray-800 tracking-wide hover:text-red-600 transition-all flex items-center space-x-2"
         >
-          {/* ✅ CHANGEMENT ICI : Remplacement de l'icône par l'image */}
+          {/*Remplacement de l'icône par l'image */}
           <img src={Fifa2026Logo} alt="FIFA World Cup 2026 Logo" className="h-8 mr-2" /> {/* Ajustez la taille (h-8) si nécessaire */}
           <span>Coupe du Monde 2026</span>
         </Link>

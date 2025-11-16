@@ -2,7 +2,7 @@
 import React from "react";
 import type { Team } from "../types";
 import { API_BASE_URL } from "../services/apiService";
-import { Link } from 'react-router-dom'; // ✅ Ajout de l'importation du Link
+import { Link } from 'react-router-dom';
 
 
 interface TeamCardProps {

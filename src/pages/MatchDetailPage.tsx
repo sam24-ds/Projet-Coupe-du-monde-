@@ -10,7 +10,10 @@ import { useCart } from "../context/CartContext";
 
 // Note : DollarSign est remplacé par Ticket dans le bouton ci-dessous
 
-import { ArrowLeft, MapPin, Building2, Ticket } from 'lucide-react'; 
+
+import { ArrowLeft, MapPin, Building2, Ticket, DollarSign } from 'lucide-react';
+
+import { translateTeamName } from '../utils/translations'; 
 
 
 
@@ -292,7 +295,7 @@ function MatchDetailPage() {
 
                             </div>
 
-                            <h2 className="text-3xl font-black">{match.homeTeam.name}</h2>
+                            <h2 className="text-3xl font-black">{translateTeamName(match.homeTeam.name)}</h2>
 
                         </div>
 
@@ -320,7 +323,7 @@ function MatchDetailPage() {
 
                             </div>
 
-                            <h2 className="text-3xl font-black">{match.awayTeam.name}</h2>
+                            <h2 className="text-3xl font-black">{translateTeamName(match.awayTeam.name)}</h2>
 
                         </div>
 

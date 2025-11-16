@@ -1,7 +1,7 @@
-import { useContext, useState, useEffect } from "react"; // Ajout de useState et useEffect
+import { useContext, useState, useEffect } from "react"; //useState et useEffect
 import { AuthContext } from "../context/AuthContext";
-import { User, LogOut, Ticket, Clock, CheckCircle, Link } from "lucide-react"; // Nouvelles icônes
-import { getMyTickets } from '../services/apiService'; // Import de la fonction API
+import { User, LogOut, Ticket, Clock, CheckCircle, Link } from "lucide-react"; // icônes
+import { getMyTickets } from '../services/apiService'; 
 import type { Ticket as TicketType } from '../types'; // Renommer Ticket pour éviter le conflit avec l'icône Lucide
 
 export default function ProfilePage() {
@@ -31,12 +31,11 @@ export default function ProfilePage() {
             .finally(() => setIsLoadingTickets(false));
     }, [user]);
     
-    // --- Styles d'accentuation (pour la démo) ---
+    //Styles d'accentuation
     const ACCENT_COLOR = "blue";
     const accentBorder = `border-${ACCENT_COLOR}-600`;
     const accentText = `text-${ACCENT_COLOR}-600`;
-    // ---------------------------------------------
-
+    
 
     // Gère le cas où l'utilisateur n'est pas encore chargé
     if (!user) {
@@ -55,7 +54,7 @@ export default function ProfilePage() {
             
             <div className="max-w-4xl mx-auto">
                 
-                {/* 1. HEADER DU PROFIL (VOTRE DESIGN TAILWIND) */}
+                {/* 1. HEADER DU PROFIL (DESIGN TAILWIND) */}
                 <div className={`bg-white rounded-xl shadow-lg p-6 mb-8 border-t-4 ${accentBorder}`}>
                     <h1 className={`text-4xl font-black text-gray-900 flex items-center gap-3 ${accentText}`}>
                         <User className="w-8 h-8" /> Mon Tableau de Bord
@@ -110,7 +109,7 @@ export default function ProfilePage() {
 
                     </div>
 
-                    {/* COLONNE DROITE: MES TICKETS (NOUVELLE FONCTIONNALITÉ) */}
+                    {/* COLONNE DROITE: MES TICKETS */}
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-xl shadow-lg p-6 space-y-5 border-2 border-gray-100">
                             <h2 className="text-2xl font-bold text-gray-800 border-b pb-3 border-gray-200 flex items-center gap-2">

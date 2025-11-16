@@ -13,7 +13,7 @@ function GroupsPage() {
   const [selectedGroupName, setSelectedGroupName] = useState('');
   const navigate = useNavigate();
 
-  // ... (toute votre logique useEffect, useMemo, handleGroupClick reste la même) ...
+  
   useEffect(() => {
     const loadData = async () => {
       try {
