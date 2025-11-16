@@ -1,4 +1,3 @@
-// src/components/TeamCard.tsx
 import React from "react";
 import type { Team } from "../types";
 import { API_BASE_URL } from "../services/apiService";
@@ -10,10 +9,10 @@ interface TeamCardProps {
 }
 
 const TeamCard: React.FC<TeamCardProps> = ({ team }) => {
-    // La fonctionnalité du groupe est d'envelopper la carte dans un Link vers la page d'accueil avec filtre.
+    //groupe pour envelopper la carte dans un Link vers la page d'accueil avec filtre.
     return (
         <Link to={`/?team=${team.id}`}> 
-            {/* VOTRE DESIGN TAILWIND (avec ajustements pour la cliquabilité) */}
+            {/* DESIGN TAILWIND (avec ajustements pour la cliquabilité) */}
             <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 text-center hover:scale-105 border-2 border-blue-200 hover:border-blue-500 group cursor-pointer">
                 
                 {/* Drapeau */}

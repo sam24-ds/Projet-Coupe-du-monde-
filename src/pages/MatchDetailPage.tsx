@@ -237,7 +237,7 @@ function MatchDetailPage() {
 
             {/* Bouton retour et Header */}
 
-            {/* ✅ CHANGEMENT : Fond gris sombre/noir et texte blanc */}
+            {/*Fond gris sombre/noir et texte blanc */}
 
             <div className="bg-gray-800 shadow-md">
 
@@ -405,25 +405,25 @@ function MatchDetailPage() {
 
                                     
 
-                                    {/* Zone Nord (VIP - ROUGE) - MAINTENANT EN HAUT */}
+                                    {/* Zone Nord (VIP - ROUGE) -  EN HAUT */}
 
                                     <div {...getTribuneProps('VIP')} onMouseEnter={(e) => handleMouseEnter(e, 'VIP')} className={`absolute top-[10%] w-[50%] h-[20%] rounded-t-full bg-${categoryColorMap['VIP']}-600`}></div>
 
                                     
 
-                                    {/* Zone Sud (CAT 2 - GRIS - INCHANGÉE) */}
+                                    {/* Zone Sud */}
 
                                     <div {...getTribuneProps('CATEGORY_2')} onMouseEnter={(e) => handleMouseEnter(e, 'CATEGORY_2')} className={`absolute bottom-[10%] w-[50%] h-[20%] rounded-b-full bg-${categoryColorMap['CATEGORY_2']}-600`}></div>
 
 
 
-                                    {/* Zone Est (CAT 3 - BLEU - INCHANGÉE) */}
+                                    {/* Zone Est  */}
 
                                     <div {...getTribuneProps('CATEGORY_3')} onMouseEnter={(e) => handleMouseEnter(e, 'CATEGORY_3')} className={`absolute right-[10%] h-[50%] w-[18%] rounded-r-full bg-${categoryColorMap['CATEGORY_3']}-600`}></div>
 
                                     
 
-                                    {/* Zone Ouest (CAT 1 - VERT) - MAINTENANT À GAUCHE */}
+                                    {/* Zone Ouest (CAT 1 - VERT) - À GAUCHE */}
 
                                     <div {...getTribuneProps('CATEGORY_1')} onMouseEnter={(e) => handleMouseEnter(e, 'CATEGORY_1')} className={`absolute left-[10%] h-[50%] w-[18%] rounded-l-full bg-${categoryColorMap['CATEGORY_1']}-600`}></div>
 
@@ -439,7 +439,7 @@ function MatchDetailPage() {
 
 
 
-                        {/* Légende des catégories (Reste inchangée) */}
+                        {/* Légende des catégories */}
 
                         <div className="bg-white rounded-2xl shadow-xl p-6 border-t-4 border-red-600">
 

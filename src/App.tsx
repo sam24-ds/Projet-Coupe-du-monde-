@@ -25,7 +25,7 @@ function App(){
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
-          {/*ajoute ici les routes securisé c'est mieux que nodeChildren que j'avais mis en place avant */}
+          {/*ajout des routes securisé */}
         </Route>
         <Route path="/" element={<HomePage/>} />
         <Route path="/match/:id" element={<MatchDetailPage/>}/>

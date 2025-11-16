@@ -72,7 +72,7 @@ function CartPage() {
         setTimeout(() => setPriceTrend(null), 8000);
     };
 
-    // ✅ FONCTIONNALITÉ FUSIONNÉE : Gestion du processus de commande
+    // Gestion du processus de commande
     const handleProceedToCheckout = async () => {
         if (!isAuthenticated) {
             toast.error("Veuillez vous connecter pour continuer.");
@@ -111,7 +111,7 @@ function CartPage() {
     };
 
 
-    // 🛒 Cas 1 : panier vide (Utilise votre design avec image de fond)
+    //Cas 1 : panier vide (Utilise le design avec image de fond)
     if (cartItems.length === 0) {
         return (
             <div 
@@ -139,7 +139,7 @@ function CartPage() {
         );
     }
 
-    // 🎟️ Cas 2 : panier avec articles (Utilise votre design et les nouvelles logiques)
+    //panier avec articles (Utilise le design et les nouvelles logiques)
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-50 to-gray-100">
             {/* HEADER */}
@@ -232,7 +232,7 @@ function CartPage() {
                                 <DollarSign className="w-6 h-6 mr-2" /> Récapitulatif
                             </h2>
 
-                            {/* Simulateur de Tendance des Prix (INNOVANT) */}
+                            {/* Simulateur de Tendance des Prix */}
                             <div className="pb-6 border-b border-gray-200 mb-6">
                                 <h3 className="text-lg font-black text-gray-800 flex items-center gap-2 mb-2">
                                     <Zap className="w-5 h-5 text-yellow-600" /> Simulateur de Prix
