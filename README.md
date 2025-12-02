@@ -19,3 +19,4 @@
 **Formation :** L3 MIASHS – IDMC – Université de Lorraine
 
 ## Lien vers le depot Git : https://github.com/sam24-ds/Projet-Coupe-du-monde-
+
